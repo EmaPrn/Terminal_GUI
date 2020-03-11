@@ -1,10 +1,9 @@
-class _Node:
+class Node:
     def __init__(self, name, payload=None):
         self._name = name
         self._payload = payload
         self._parent = None
         self._children = []
-        self.is_active = False
 
     @property
     def name(self):
@@ -27,6 +26,10 @@ class _Node:
     @property
     def children(self):
         return self._children
+
+    @property
+    def children_payload(self):
+        return [child.payload for child in self._children]
 
     def has_children(self):
         return True if len(self._children) > 0 else False
@@ -61,11 +64,15 @@ class _Node:
 class Tree:
     def __init__(self, root="root", root_payload=None):
         if isinstance(root, str):
-            self._root = _Node(root, root_payload)
-        elif isinstance(root, _Node):
+            self._root = Node(root, root_payload)
+        elif isinstance(root, Node):
             self._root = root
         self._current = self._root
         self._iterator = iter(self._root)
+
+    @property
+    def root(self):
+        return self._root
 
     @property
     def current(self):
@@ -84,48 +91,14 @@ class Tree:
                     return found
         return None
 
-    def remove_node(self, node_name, refresh=True):
-        node = self.get_node(node_name)
-        if node:
-            node.parent.remove_child(node)
-            if refresh:
-                self.activate_first()
-
-    def add_node(self, parent_name, child_name, child_payload=None, refresh=True):
-        if not self.get_node(child_name):
-            child = _Node(child_name, child_payload)
-            self.get_node(parent_name).add_child(child)
-            if refresh:
-                self.activate_first()
-
-    def activate_first(self):
+    def _reset_current(self):
         self._iterator = iter(self._root)
         self._current = next(self._iterator)
 
-    def activate_next(self):
-        self._deactivate_current()
-
+    def set_next(self):
         try:
             self._current = next(self._iterator)
         except StopIteration:
-            self.activate_first()
+            self._reset_current()
 
-        node = self._current
-        while node:
-            node.is_active = True
-            node = node.parent
-
-    def _deactivate_current(self):
-        node = self._current
-        while node:
-            node.is_active = False
-            node = node.parent
-
-
-tree = Tree("A")
-tree.add_node("A", "B")
-tree.add_node("A", "C")
-tree.add_node("C", "D")
-tree.add_node("C", "E")
-tree.add_node("E", "F")
-
+        return self._current

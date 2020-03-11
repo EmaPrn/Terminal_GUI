@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from Constraints import Constraint, RelativePosition, AbsoluteSize, RelativeSize, CenteredPosition, CannotDrawError
+from tree import Tree, Node
 import curses
 
 
@@ -9,7 +10,7 @@ class WindowManager(object):
     class _WindowManager:
         def __init__(self, stdscr):
             self.screen = stdscr
-            self.elements = []
+            self.tree = Tree("Manager", self)
             self.screen.clear()
             self.screen.refresh()
 
@@ -57,15 +58,32 @@ class WindowManager(object):
 
         def display(self):
             self.erase()
-            for element in self.elements:
+            for element in self.tree.root.children_payload:
                 element.display()
             self.refresh()
 
         def add_element(self, elem):
             if isinstance(elem, Panel):
-                self.elements.append(elem)
+                self.tree.root.add_child(elem.node)
+
             else:
                 raise TypeError("Only Panel or Widget objects may be elements of a Window Manager")
+
+        def _deactivate_current(self):
+            node = self.tree.current
+            while node:
+                node.payload.is_active = False
+                node = node.parent
+
+        def activate_next(self):
+            self._deactivate_current()
+            self.tree.set_next()
+
+            node = self.tree.current
+
+            while node:
+                node.payload.is_active = True
+                node = node.parent
 
     instance = None
 
@@ -81,9 +99,7 @@ class Panel(object):
 
     def __init__(self, parent, y_constraint, x_constraint, h_constraint, w_constraint, title='', has_borders=True):
         self.title = title
-        self.elements = []
-
-        self.parent = parent
+        self.node = Node(title, self)
 
         self._x_constraint = x_constraint
         self._y_constraint = y_constraint
@@ -91,6 +107,16 @@ class Panel(object):
         self._h_constraint = h_constraint
 
         self.has_borders = has_borders
+
+        self.is_active = False
+
+    @property
+    def parent(self):
+        return self.node.parent.payload
+
+    @property
+    def elements(self):
+        return self.node.children_payload
 
     @property
     def x(self):
@@ -180,13 +206,18 @@ class Panel(object):
         return self.parent.draw_rectangle(uly + self.y, ulx + self.x, lry + self.y, lrx + self.x)
 
     def draw_borders(self):
+        if self.is_active:
+            title = "A: " + self.title
+        else:
+            title = self.title
+
         self.draw_rectangle(0,0,self.h,self.w)
 
-        x_title = (self.w - len(self.title) - 2) // 2
+        x_title = (self.w - len(title) - 2) // 2
         if x_title >= 0:
-            self.draw(0, x_title, " " + self.title + " ")
+            self.draw(0, x_title, " " + title + " ")
         else:
-            self.draw(0, 1, " " + self.title[:self.w - 3] + ". ")
+            self.draw(0, 1, " " + title[:self.w - 3] + ". ")
 
     def draw_elements(self):
         for elem in self.elements:
@@ -194,7 +225,7 @@ class Panel(object):
 
     def add_element(self, elem):
         if isinstance(elem, Panel):
-            self.elements.append(elem)
+            self.node.add_child(elem.node)
         else:
             raise TypeError("Only Panel or Widget objects may be elements of a Panel")
 
@@ -209,16 +240,27 @@ def draw_menu(stdscr):
 
     manager.add_element(panel_1)
 
-    panel_2 = Panel(panel_1, CenteredPosition(), CenteredPosition(), RelativeSize(.4), AbsoluteSize(10), "Test")
+    panel_2 = Panel(panel_1, RelativePosition(.2), CenteredPosition(), RelativeSize(.25), AbsoluteSize(10), "Test")
 
     panel_1.add_element(panel_2)
+
+    panel_3 = Panel(panel_1, RelativePosition(.6), CenteredPosition(), RelativeSize(.25), AbsoluteSize(10), "Test")
+
+    panel_1.add_element(panel_3)
 
     k = 0
 
     screen_y = 0
     screen_x = 0
 
+    manager.activate_next()
+
     while k != ord('q'):
+
+        if k == ord('a'):
+            manager.activate_next()
+            manager.display()
+
         old_screen_y = screen_y
         old_screen_x = screen_x
         screen_y, screen_x = manager.get_max_yx()
