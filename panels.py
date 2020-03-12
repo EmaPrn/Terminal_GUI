@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from Constraints import Constraint, RelativePosition, AbsoluteSize, RelativeSize, CenteredPosition, CannotDrawError
+from constraints import Constraint, RelativePosition, AbsoluteSize, RelativeSize, CenteredPosition, CannotDrawError
 from tree import Tree, Node
 import curses
 
