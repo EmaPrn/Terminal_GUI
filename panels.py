@@ -87,16 +87,16 @@ class WindowManager(object):
 
         def display(self):
             self.erase()
-            for element in self.tree.root.children_payload:
-                element.display()
+            for child in self.tree.root:
+                child.payload.display()
             self.refresh()
 
-        def add_element(self, elem):
-            if isinstance(elem, Panel):
-                self.tree.root.add_child(elem.node)
+        def add_child(self, child):
+            if isinstance(child, Panel):
+                self.tree.root.add_child(child.node)
 
             else:
-                raise TypeError("Only Panel or Widget objects may be elements of a Window Manager")
+                raise TypeError("Only Panel or Widget objects may be children of a Window Manager")
 
         def _deactivate_current(self):
             node = self.tree.current
@@ -144,8 +144,8 @@ class Panel(object):
         return self.node.parent.payload
 
     @property
-    def elements(self):
-        return self.node.children_payload
+    def children(self):
+        return [child.payload for child in self.node]
 
     @property
     def x(self):
@@ -224,7 +224,7 @@ class Panel(object):
         try:
             if self.has_borders:
                 self.draw_borders()
-            self.draw_elements()
+            self.draw_children()
         except CannotDrawError:
             pass
 
@@ -248,15 +248,15 @@ class Panel(object):
         else:
             self.draw(0, 1, " " + title[:self.w - 3] + ". ")
 
-    def draw_elements(self):
-        for elem in self.elements:
+    def draw_children(self):
+        for elem in self.children:
             elem.display()
 
-    def add_element(self, elem):
+    def add_child(self, elem):
         if isinstance(elem, Panel):
             self.node.add_child(elem.node)
         else:
-            raise TypeError("Only Panel or Widget objects may be elements of a Panel")
+            raise TypeError("Only Panel or Widget objects may be children of a Panel")
 
 
 def draw_menu(stdscr):
@@ -267,15 +267,15 @@ def draw_menu(stdscr):
 
     panel_1 = Panel(manager, RelativePosition(0.2), CenteredPosition(), RelativeSize(.4), AbsoluteSize(30), "Test")
 
-    manager.add_element(panel_1)
+    manager.add_child(panel_1)
 
     panel_2 = Panel(panel_1, RelativePosition(.2), CenteredPosition(), RelativeSize(.25), AbsoluteSize(10), "Test")
 
-    panel_1.add_element(panel_2)
+    panel_1.add_child(panel_2)
 
     panel_3 = Panel(panel_1, RelativePosition(.6), CenteredPosition(), RelativeSize(.25), AbsoluteSize(10), "Test")
 
-    panel_1.add_element(panel_3)
+    panel_1.add_child(panel_3)
 
     k = 0
 

@@ -2,7 +2,7 @@ def _node_iterator(node):
     if not node.has_children():
         yield node
     else:
-        for child in node.children:
+        for child in node:
             iterator = _node_iterator(child)
             stop = False
             while not stop:
@@ -37,14 +37,6 @@ class Node:
             self._parent.remove_child(self)
         self._parent = parent
 
-    @property
-    def children(self):
-        return self._children
-
-    @property
-    def children_payload(self):
-        return [child.payload for child in self._children]
-
     def has_children(self):
         return True if len(self._children) > 0 else False
 
@@ -65,6 +57,10 @@ class Node:
 
     def __str__(self):
         return self._name
+
+    def __iter__(self):
+        for child in self._children:
+            yield child
 
 
 class Tree:
@@ -91,7 +87,7 @@ class Tree:
         if node.name == name:
             return node
         else:
-            for child in node.children:
+            for child in node:
                 found = self.get_node(name, child)
                 if found:
                     return found
