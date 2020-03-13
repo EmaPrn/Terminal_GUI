@@ -53,7 +53,7 @@ class RelativePosition(PositionConstraint):
 
 
 class CenteredPosition(PositionConstraint):
-    @staticmethod
+
     def impose(self, direction: str, h: int, w: int, max_y: int, max_x: int) -> int:
 
         if direction is "x":
@@ -98,9 +98,9 @@ class RelativeSize(SizeConstraint):
         else:
             raise ValueError('Imposed value must be comprised between 0 and 1.')
 
-    def impose(self, direction, max_y, max_x) -> int:
+    def impose(self, direction: str, max_y: int, max_x: int) -> int:
 
-        out: Union[None, int] = None
+        out: Union[None, float] = None
 
         if direction == "x":
             out = max_x * self.value
