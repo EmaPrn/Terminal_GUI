@@ -1,9 +1,32 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from constraints import Constraint, RelativePosition, AbsoluteSize, RelativeSize, CenteredPosition, CannotDrawError
+from abc import ABC, abstractmethod
 from tree import Tree, Node
 import curses
+
+
+class CannotDrawError(Exception):
+    "Error to throw when the constraint cannot be satisfied"
+    pass
+
+
+class Constraint(ABC):
+    pass
+
+
+class PositionConstraint(ABC, Constraint):
+
+    @abstractmethod
+    def impose(self, direction, h, w, max_y, max_x):
+        pass
+
+
+class SizeConstraint(ABC, Constraint):
+
+    @abstractmethod
+    def impose(self, direction, h, w, max_y, max_x):
+        pass
 
 
 class MainScreen(object):
