@@ -55,6 +55,10 @@ class PanelManager(object):
         self._tree: Tree = Tree("Manager", canvas)
         self._canvas: ICanvas = canvas
 
+    @property
+    def tree(self):
+        return self._tree
+
     def get_elements(self) -> List[Panel]:
         return [child.payload for child in self.tree.root]
 
