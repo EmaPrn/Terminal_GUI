@@ -1,11 +1,21 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+# These annotations allow type hints, even to reference an object inside its own class
 from __future__ import annotations
 from typing import Any, Union, List
 
 
 class Node(object):
+    """
+    A class representing a node of a tree.
+    It yields its children when iterated upon.
+
+    Attributes:
+        name (str): The identifier of the node. A tree must ensure its uniqueness.
+        payload (Any): The object carried by the node. It can be anything.
+        parent (Node): The node parent. If the node is the root of a tree it can be None. It is initialised to None.
+    """
     def __init__(self, name: str, payload: Any = None):
         self._name: str = name
         self._payload: Any = payload
@@ -24,6 +34,8 @@ class Node(object):
     def parent(self) -> Node:
         return self._parent
 
+    # The use of a property setter ensures that if the parent is changed, the old parent will be modified accordingly.
+    # Removing the node from the children list of the former parent.
     @parent.setter
     def parent(self, parent: Node) -> None:
         if self._parent:
@@ -33,10 +45,14 @@ class Node(object):
     def has_children(self) -> bool:
         return True if len(self._children) > 0 else False
 
+    # The check ensure the uniqueness of the child name among its potential brothers before the insertion.
     def add_child(self, child: Node):
-        if child not in self._children:
-            self._children.append(child)
-            child.parent = self
+        for existing_child in self._children:
+            if child.name == existing_child.name:
+                raise ValueError("The node already has a child with the same name: " + child.name)
+
+        self._children.append(child)
+        child.parent = self
 
     def remove_child(self, child: Node):
         if child in self._children:
@@ -50,6 +66,7 @@ class Node(object):
     def __str__(self):
         return self._name
 
+    # The node class is iterable.
     def __iter__(self) -> Node:
         for child in self._children:
             yield child
@@ -70,6 +87,17 @@ def _node_iterator(node: Node) -> Union[Node, _node_iterator]:
 
 
 class Tree(object):
+    """
+    A class representing a tree.
+    It can be seen as a "Leaves' Iterator" as it allows to iterate upon the leaves of the tree (nodes without children)
+    by calling the method
+
+    Attributes:
+        _root (str | Node): The root node of the tree. If a string is provided the constructor will initialise it to
+                            a new node with the provided name. If the root payload (optional) parameter is passed, it
+                            will be the payload of the newly created root node.
+        _current (Node): The current node. I.e. the last node yielded by the set_next() method.
+    """
     def __init__(self, root: Union[str, Node] = "root", root_payload: Any = None):
         if isinstance(root, str):
             self._root: Node = Node(root, root_payload)
@@ -87,6 +115,17 @@ class Tree(object):
         return self._current
 
     def get_node(self, name: str, node: Node = None) -> Union[None, Node]:
+        """ Given a node name, it looks for it in the tree and return the node if found.
+
+        Parameters:
+            name (str): The name of the node to look for.
+            node (Node): (Optional) The starting node for the research. Used to call the method in a recursive manner.
+                         If not specified the research will start at the root node.
+
+        Returns:
+            The searched node if exists, None otherwise.
+
+        """
         if not node:
             node: Node = self._root
 
@@ -99,14 +138,26 @@ class Tree(object):
                     return found
         return None
 
-    def _reset_current(self) -> None:
+    def reset_current(self) -> None:
+        """ It resets the current leaf to the first one of the sequence.
+
+        Note:
+            If any node of the tree is modified this method MUST be called before any call of the set_next() method.
+
+        """
         self._iterator = _node_iterator(self._root)
         self._current = next(self._iterator)
 
     def set_next(self) -> Node:
+        """ It yields the next leaf of the sequence
+
+        Returns:
+            The next leaf of the sequence, if the current leaf is the last then it loops back to the first.
+            
+        """
         try:
             self._current = next(self._iterator)
         except StopIteration:
-            self._reset_current()
+            self.reset_current()
 
         return self._current
