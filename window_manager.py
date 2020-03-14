@@ -60,12 +60,12 @@ class WindowManager(object):
 
         def display(self):
             self.erase()
-            for child in self.panel_manager.get_elements():
-                child.display()
+            for child in self.panel_manager.get_panels():
+                child.render()
             self.refresh()
 
         def add_panel(self, child: Panel):
-            self.panel_manager.add_child(child)
+            self.panel_manager.add_panel(child)
 
         def get_next(self):
             return self.panel_manager.get_next()

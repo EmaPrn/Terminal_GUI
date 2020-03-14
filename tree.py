@@ -7,14 +7,12 @@ from typing import Any, Union, List
 
 
 class Node(object):
-    """
-    A class representing a node of a tree.
+    """Class representing a node of a tree.
     It yields its children when iterated upon.
 
     Attributes:
         name (str): The identifier of the node. A tree must ensure its uniqueness.
         payload (Any): The object carried by the node. It can be anything.
-        parent (Node): The node parent. If the node is the root of a tree it can be None. It is initialised to None.
     """
     def __init__(self, name: str, payload: Any = None):
         self._name: str = name
@@ -73,6 +71,15 @@ class Node(object):
 
 
 def _node_iterator(node: Node) -> Union[Node, _node_iterator]:
+    """A generator that takes a Node as input and yields (one-by-one) all the leaves
+        of the subtree originated from the node.
+
+    Parameters:
+        node (Node): A starting node. It defines the subtree for the research of leaves.
+
+    Returns:
+        The next available leaf of the subtree.
+    """
     if not node.has_children():
         yield node
     else:
@@ -87,8 +94,7 @@ def _node_iterator(node: Node) -> Union[Node, _node_iterator]:
 
 
 class Tree(object):
-    """
-    A class representing a tree.
+    """Class representing a tree.
     It can be seen as a "Leaves' Iterator" as it allows to iterate upon the leaves of the tree (nodes without children)
     by calling the method
 
@@ -115,7 +121,7 @@ class Tree(object):
         return self._current
 
     def get_node(self, name: str, node: Node = None) -> Union[None, Node]:
-        """ Given a node name, it looks for it in the tree and return the node if found.
+        """Method looking for a node in the tree, given its name.
 
         Parameters:
             name (str): The name of the node to look for.
@@ -139,7 +145,7 @@ class Tree(object):
         return None
 
     def reset_current(self) -> None:
-        """ It resets the current leaf to the first one of the sequence.
+        """Resets the current leaf to the first one of the sequence.
 
         Note:
             If any node of the tree is modified this method MUST be called before any call of the set_next() method.
@@ -149,11 +155,11 @@ class Tree(object):
         self._current = next(self._iterator)
 
     def set_next(self) -> Node:
-        """ It yields the next leaf of the sequence
+        """Yields the next leaf of the sequence
 
         Returns:
             The next leaf of the sequence, if the current leaf is the last then it loops back to the first.
-            
+
         """
         try:
             self._current = next(self._iterator)

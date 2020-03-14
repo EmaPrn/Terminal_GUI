@@ -11,15 +11,15 @@ def draw_menu(stdscr):
     manager.clear()
     manager.refresh()
 
-    panel_1 = Panel(RelativePosition(0.2), CenteredPosition(), RelativeSize(.4), AbsoluteSize(30), "Test")
+    panel_1 = Panel(RelativePosition(0.2), CenteredPosition(), RelativeSize(.4), AbsoluteSize(30), "Panel1", "Test")
 
     manager.add_panel(panel_1)
 
-    panel_2 = Panel(RelativePosition(.2), CenteredPosition(), RelativeSize(.25), AbsoluteSize(10), "Test")
+    panel_2 = Panel(RelativePosition(.2), CenteredPosition(), RelativeSize(.25), AbsoluteSize(10), "Panel2", "Test")
 
     panel_1.add_child(panel_2)
 
-    panel_3 = Panel(RelativePosition(.6), CenteredPosition(), RelativeSize(.25), AbsoluteSize(10), "Test")
+    panel_3 = Panel(RelativePosition(.6), CenteredPosition(), RelativeSize(.25), AbsoluteSize(10), "Panel3", "Test")
 
     panel_1.add_child(panel_3)
 
