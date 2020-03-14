@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 from abc import ABC, abstractmethod
-from tree import Node
 
 
 class Canvas(ABC):
@@ -23,10 +22,4 @@ class Drawable(Canvas):
 
     @abstractmethod
     def display(self):
-        pass
-
-class NodeDrawable(Drawable):
-    @abstractmethod
-    @property
-    def node(self) -> Node:
         pass
