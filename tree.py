@@ -2,6 +2,8 @@
 # -*- coding: utf-8 -*-
 
 # These annotations allow type hints, even to reference an object inside its own class
+
+# Imports used for type hints
 from __future__ import annotations
 from typing import Any, Union, List
 

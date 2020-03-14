@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+# Imports used for type hints
 from __future__ import annotations
 from typing import List
-from tree import Tree
-from canvas import ICanvas
+
 from gui_elements import CannotDrawError, IPositionConstraint, ISizeConstraint, GuiElement
 
 
@@ -67,61 +67,3 @@ class Panel(GuiElement):
 
     def add_child(self, elem: GuiElement) -> None:
         self.node.add_child(elem.node)
-
-
-class PanelManager(object):
-    """Manage a tree made of panels.
-        Based the concept of active panel/element, it can step trough all the leaves of the tree to activate them.
-
-        Note:
-        Only one leaf can be active at a given time. If a leaf is active, all the panels crossed in the path
-        from the root to the active leaf will be active as well.
-
-        Attributes:
-            canvas (ICanvas): The canvas where the panels will be drawn. It forms the payload of the root node
-                              of the managed tree, this allows the other panels to draw on it just by calling
-                              the methods of their parents.
-
-    """
-    def __init__(self, canvas: ICanvas):
-        self._tree: Tree = Tree("Manager", canvas)
-        self._canvas: ICanvas = canvas
-
-    @property
-    def tree(self):
-        return self._tree
-
-    def get_panels(self) -> List[Panel]:
-        return [child.payload for child in self.tree.root]
-
-    def add_panel(self, child: Panel) -> None:
-        self.tree.root.add_child(child.node)
-
-    def _deactivate_current(self) -> None:
-        """ Recursively deactivate the current active node and all its parents up to the root node."""
-        node = self.tree.current
-        while isinstance(node.payload, GuiElement):
-            node.payload.is_active = False
-            node = node.parent
-
-    def get_active(self) -> GuiElement:
-        return self.tree.current.payload
-
-    def get_next(self) -> GuiElement:
-        """" This method deactivate the current active element (and all its parents) and activate the element contained
-             in the next leaf. The activation process go through all the nodes in the path between the root
-             node and the leaf.
-
-             Returns:
-                 The newly activated element (the one contained in the leaf).
-        """
-        self._deactivate_current()
-        self.tree.set_next()
-
-        node = self.tree.current
-
-        while isinstance(node.payload, Panel):
-            node.payload.is_active = True
-            node = node.parent
-
-        return self.tree.current.payload

@@ -13,7 +13,7 @@ def draw_menu(stdscr):
 
     panel_1 = Panel(RelativePosition(0.2), CenteredPosition(), RelativeSize(.4), AbsoluteSize(30), "Panel1", "Test")
 
-    manager.add_panel(panel_1)
+    manager.add_element(panel_1)
 
     panel_2 = Panel(RelativePosition(.2), CenteredPosition(), RelativeSize(.25), AbsoluteSize(10), "Panel2", "Test")
 

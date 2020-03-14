@@ -1,11 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+# Imports used for type hints
 from __future__ import annotations
-from typing import Tuple
+from typing import Tuple, List
+
+# Allows the definition of interfaces
 from abc import ABC, abstractmethod
-from tree import Node
-from canvas import ICanvas
+
+# Import needed by ElementTreeManager
+from tree import Node, Tree
 
 
 class CannotDrawError(Exception):
@@ -49,6 +53,38 @@ class ISizeConstraint(IConstraint):
 
         Returns:
             The computed size if possible, raise CannotDrawError otherwise.
+        """
+        pass
+
+
+class ICanvas(ABC):
+    @abstractmethod
+    def get_max_yx(self):
+        """Compute and returns the boundaries for x and y positions."""
+        pass
+
+    @abstractmethod
+    def draw(self, y_pos, x_pos, text, *args):
+        """Draw a string of text at a given (relative) position.
+
+        Parameters:
+            y_pos (int): The relative y position to start drawing the text.
+            x_pos (int): The relative x position to start drawing the text.
+            text (str): The text to draw.
+            args: Optional parameters to specify text styles.
+        """
+        pass
+
+    @abstractmethod
+    def draw_rectangle(self, uly, ulx, lry, lrx):
+        """Draw a rectangle with corners at the provided upper-left and lower-right coordinates.
+
+        Parameters:
+            uly: y position of the Upper-Left corner of the rectangle
+            ulx: x position of the Upper-Left corner of the rectangle
+            lry: y position of the Lower-Right corner of the rectangle
+            lrx: x position of the Lower-Right corner of the rectangle
+
         """
         pass
 
@@ -144,3 +180,61 @@ class GuiElement(ICanvas):
         """Render the given GUI element.
             It should use the draw method."""
         pass
+
+
+class ElementTreeManager(object):
+    """Manage a tree made of panels.
+        Based the concept of active element, it can step trough all the leaves of the tree to activate them.
+
+        Note:
+        Only one leaf can be active at a given time. If a leaf is active, all the elements crossed in the path
+        from the root to the active leaf will be active as well.
+
+        Attributes:
+            canvas (ICanvas): The canvas where the elements will be drawn. It forms the payload of the root node
+                              of the managed tree, this allows the other elements to draw on it just by calling
+                              the methods of their parents.
+
+    """
+    def __init__(self, canvas: ICanvas):
+        self._tree: Tree = Tree("Manager", canvas)
+        self._canvas: ICanvas = canvas
+
+    @property
+    def tree(self):
+        return self._tree
+
+    def get_elements(self) -> List[GuiElement]:
+        return [child.payload for child in self.tree.root]
+
+    def add_element(self, child: GuiElement) -> None:
+        self.tree.root.add_child(child.node)
+
+    def _deactivate_current(self) -> None:
+        """ Recursively deactivate the current active node and all its parents up to the root node."""
+        node = self.tree.current
+        while isinstance(node.payload, GuiElement):
+            node.payload.is_active = False
+            node = node.parent
+
+    def get_active(self) -> GuiElement:
+        return self.tree.current.payload
+
+    def get_next(self) -> GuiElement:
+        """" This method deactivate the current active element (and all its parents) and activate the element contained
+             in the next leaf. The activation process go through all the nodes in the path between the root
+             node and the leaf.
+
+             Returns:
+                 The newly activated element (the one contained in the leaf).
+        """
+        self._deactivate_current()
+        self.tree.set_next()
+
+        node = self.tree.current
+
+        while isinstance(node.payload, GuiElement):
+            node.payload.is_active = True
+            node = node.parent
+
+        return self.tree.current.payload
