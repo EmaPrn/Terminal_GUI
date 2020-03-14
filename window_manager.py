@@ -3,10 +3,10 @@
 
 from panels import Panel, PanelManager
 from abc import abstractmethod
-from gui_interfaces import Canvas
+from canvas import ICanvas
 
 
-class Window(Canvas):
+class Window(ICanvas):
     @abstractmethod
     def get_input(self):
         pass

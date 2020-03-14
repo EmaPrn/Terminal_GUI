@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from panels import PositionConstraint, SizeConstraint, CannotDrawError
+from gui_elements import IPositionConstraint, ISizeConstraint, CannotDrawError
 from typing import Union
 
 
-class AbsolutePosition(PositionConstraint):
+class AbsolutePosition(IPositionConstraint):
     def __init__(self, value: int):
         self.value: int = value
 
@@ -31,7 +31,7 @@ class AbsolutePosition(PositionConstraint):
         return int(out)
 
 
-class RelativePosition(PositionConstraint):
+class RelativePosition(IPositionConstraint):
     def __init__(self, value: float):
         if 0 <= value <= 1:
             self.value: float = value
@@ -52,7 +52,7 @@ class RelativePosition(PositionConstraint):
         return int(out)
 
 
-class CenteredPosition(PositionConstraint):
+class CenteredPosition(IPositionConstraint):
 
     def impose(self, direction: str, h: int, w: int, max_y: int, max_x: int) -> int:
 
@@ -68,7 +68,7 @@ class CenteredPosition(PositionConstraint):
         return out
 
 
-class AbsoluteSize(SizeConstraint):
+class AbsoluteSize(ISizeConstraint):
     def __init__(self, value: int):
         self.value: int = value
 
@@ -91,7 +91,7 @@ class AbsoluteSize(SizeConstraint):
         return out
 
 
-class RelativeSize(SizeConstraint):
+class RelativeSize(ISizeConstraint):
     def __init__(self, value: float):
         if 0 <= value <= 1:
             self.value = value

@@ -4,13 +4,13 @@
 from __future__ import annotations
 from typing import List
 from tree import Tree
-from gui_interfaces import Canvas
-from gui_elements import CannotDrawError, PositionConstraint, SizeConstraint, GuiElement
+from canvas import ICanvas
+from gui_elements import CannotDrawError, IPositionConstraint, ISizeConstraint, GuiElement
 
 
 class Panel(GuiElement):
-    def __init__(self, y_constraint: PositionConstraint, x_constraint: PositionConstraint, h_constraint: SizeConstraint,
-                 w_constraint: SizeConstraint, title: str = '', has_borders: bool = True):
+    def __init__(self, y_constraint: IPositionConstraint, x_constraint: IPositionConstraint, h_constraint: ISizeConstraint,
+                 w_constraint: ISizeConstraint, title: str = '', has_borders: bool = True):
 
         super().__init__(y_constraint, x_constraint, h_constraint, w_constraint, title)
 
@@ -51,9 +51,9 @@ class Panel(GuiElement):
 
 
 class PanelManager(object):
-    def __init__(self, canvas: Canvas):
-        self.tree: Tree = Tree("Manager", canvas)
-        self.canvas: Canvas = canvas
+    def __init__(self, canvas: ICanvas):
+        self._tree: Tree = Tree("Manager", canvas)
+        self._canvas: ICanvas = canvas
 
     def get_elements(self) -> List[Panel]:
         return [child.payload for child in self.tree.root]

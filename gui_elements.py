@@ -5,7 +5,7 @@ from __future__ import annotations
 from typing import Tuple
 from abc import ABC, abstractmethod
 from tree import Node
-from gui_interfaces import Drawable
+from canvas import ICanvas
 
 
 class CannotDrawError(Exception):
@@ -15,33 +15,33 @@ class CannotDrawError(Exception):
     pass
 
 
-class Constraint(ABC):
+class IConstraint(ABC):
     pass
 
 
-class PositionConstraint(Constraint):
+class IPositionConstraint(IConstraint):
     @abstractmethod
     def impose(self, direction: str, h: int, w: int, max_y: int, max_x: int):
         pass
 
 
-class SizeConstraint(Constraint):
+class ISizeConstraint(IConstraint):
     @abstractmethod
     def impose(self, direction: str, max_y: int, max_x: int):
         pass
 
 
-class GuiElement(Drawable):
-    def __init__(self, y_constraint: PositionConstraint, x_constraint: PositionConstraint,
-                 h_constraint: SizeConstraint, w_constraint: SizeConstraint, title: str = ''):
+class GuiElement(ICanvas):
+    def __init__(self, y_constraint: IPositionConstraint, x_constraint: IPositionConstraint,
+                 h_constraint: ISizeConstraint, w_constraint: ISizeConstraint, title: str = ''):
 
         self.title: str = title
         self._node: Node = Node(title, self)
 
-        self._x_constraint: PositionConstraint = x_constraint
-        self._y_constraint: PositionConstraint = y_constraint
-        self._w_constraint: SizeConstraint = w_constraint
-        self._h_constraint: SizeConstraint = h_constraint
+        self._x_constraint: IPositionConstraint = x_constraint
+        self._y_constraint: IPositionConstraint = y_constraint
+        self._w_constraint: ISizeConstraint = w_constraint
+        self._h_constraint: ISizeConstraint = h_constraint
 
         self.is_active: bool = False
 

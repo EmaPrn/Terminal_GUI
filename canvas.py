@@ -4,7 +4,7 @@
 from abc import ABC, abstractmethod
 
 
-class Canvas(ABC):
+class ICanvas(ABC):
     @abstractmethod
     def get_max_yx(self):
         pass
@@ -15,11 +15,4 @@ class Canvas(ABC):
 
     @abstractmethod
     def draw_rectangle(self, uly, ulx, lry, lrx):
-        pass
-
-
-class Drawable(Canvas):
-
-    @abstractmethod
-    def display(self):
         pass
