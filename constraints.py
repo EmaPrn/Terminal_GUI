@@ -6,10 +6,30 @@ from typing import Union
 
 
 class AbsolutePosition(IPositionConstraint):
+    """ This constraint impose a given position to the GUI element.
+        The position must respect the boundaries imposed by the parent of the element.
+
+        Attributes:
+            value (int): The absolute position to impose to the element.
+
+    """
+
     def __init__(self, value: int):
         self.value: int = value
 
     def impose(self, direction: str, h: int, w: int, max_y: int, max_x: int) -> int:
+        """Called when trying to impose the position constraint.
+
+        Parameters:
+            direction (str): Either "x" or "y".
+            h (int): Not requested by this constraint.
+            w (int): Not requested by this constraint.
+            max_y (int): Bounding y value (I.e. the y size of its parent container).
+            max_x (int): Bounding x value (I.e. the x size of its parent container).
+
+        Returns:
+            The computed position if possible, raise CannotDrawError otherwise.
+        """
 
         out: Union[None, int] = None
 
@@ -32,6 +52,18 @@ class AbsolutePosition(IPositionConstraint):
 
 
 class RelativePosition(IPositionConstraint):
+    """ This constraint impose a given position to the GUI element.
+        The position must respect the boundaries imposed by the parent of the element.
+
+        Attributes:
+            value (float): The position to impose to the element expressed as fraction of the limit
+                            imposed by the parent.
+
+        Note:
+            Value must be comprised between 0 and 1.
+
+    """
+
     def __init__(self, value: float):
         if 0 <= value <= 1:
             self.value: float = value
@@ -39,7 +71,18 @@ class RelativePosition(IPositionConstraint):
             raise ValueError('Imposed value must be comprised between 0 and 1.')
 
     def impose(self, direction: str, h: int, w: int, max_y: int, max_x: int) -> int:
+        """Called when trying to impose the position constraint.
 
+        Parameters:
+            direction (str): Either "x" or "y".
+            h (int): Not requested by this constraint.
+            w (int): Not requested by this constraint.
+            max_y (int): Bounding y value (I.e. the y size of its parent container).
+            max_x (int): Bounding x value (I.e. the x size of its parent container).
+
+        Returns:
+            The computed position if possible, raise CannotDrawError otherwise.
+        """
         if direction == "x":
             out = int(max_x * self.value)
 
@@ -53,8 +96,21 @@ class RelativePosition(IPositionConstraint):
 
 
 class CenteredPosition(IPositionConstraint):
+    """ This constraint center the GUI element at the middle of its parent."""
 
     def impose(self, direction: str, h: int, w: int, max_y: int, max_x: int) -> int:
+        """Called when trying to impose the position constraint.
+
+        Parameters:
+            direction (str): Either "x" or "y".
+            h (int): Not requested by this constraint.
+            w (int): Not requested by this constraint.
+            max_y (int): Bounding y value (I.e. the y size of its parent container).
+            max_x (int): Bounding x value (I.e. the x size of its parent container).
+
+        Returns:
+            The computed position if possible, raise CannotDrawError otherwise.
+        """
 
         if direction is "x":
             out = (max_x - w) // 2
@@ -69,10 +125,28 @@ class CenteredPosition(IPositionConstraint):
 
 
 class AbsoluteSize(ISizeConstraint):
+    """ This constraint impose a given size to the GUI element.
+        The size must respect the boundaries imposed by the parent of the element.
+
+        Attributes:
+            value (int): The absolute size to impose to the element.
+
+    """
+
     def __init__(self, value: int):
         self.value: int = value
 
     def impose(self, direction: str, max_y: int, max_x: int) -> int:
+        """Called when trying to impose the size constraint.
+
+        Parameters:
+            direction (str): Either "x" or "y".
+            max_y: Bounding y value (I.e. the y size of its parent container).
+            max_x: Bounding x value (I.e. the x size of its parent container).
+
+        Returns:
+            The computed size if possible, raise CannotDrawError otherwise.
+        """
 
         out: Union[None, int] = None
 
@@ -92,6 +166,17 @@ class AbsoluteSize(ISizeConstraint):
 
 
 class RelativeSize(ISizeConstraint):
+    """ This constraint impose a given size to the GUI element.
+        The size must respect the boundaries imposed by the parent of the element.
+
+        Attributes:
+            value (int): The relative size to impose to the element. Expressed as a fraction of the parent size.
+
+        Note:
+            Value must be comprised between 0 and 1.
+
+    """
+
     def __init__(self, value: float):
         if 0 <= value <= 1:
             self.value = value
@@ -99,6 +184,16 @@ class RelativeSize(ISizeConstraint):
             raise ValueError('Imposed value must be comprised between 0 and 1.')
 
     def impose(self, direction: str, max_y: int, max_x: int) -> int:
+        """Called when trying to impose the size constraint.
+
+        Parameters:
+            direction (str): Either "x" or "y".
+            max_y: Bounding y value (I.e. the y size of its parent container).
+            max_x: Bounding x value (I.e. the x size of its parent container).
+
+        Returns:
+            The computed size if possible, raise CannotDrawError otherwise.
+        """
 
         out: Union[None, float] = None
 
