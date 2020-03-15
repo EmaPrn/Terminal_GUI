@@ -9,7 +9,7 @@ import curses
 from _window_manager import IWindow, WindowManager
 
 
-class CursesWindow(IWindow):
+class _CursesWindow(IWindow):
     """ Implements the IWindow interface to wrap the curses methods with APIs to interact with the terminal.
 
         Attributes:
@@ -97,7 +97,7 @@ class CursesApp(WindowManager):
     def run(self):
 
         def set_screen(screen):
-            self.window = CursesWindow(screen)
+            self.window = _CursesWindow(screen)
             self.design()
             self.reset_active()
             self.main()
