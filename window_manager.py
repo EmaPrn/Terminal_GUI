@@ -45,52 +45,52 @@ class WindowManager(object):
            window (Window): The window object wrapping the low level APIs.
 
     """
-    class _WindowManager:
-        #   TODO: Implement tabs through a cyclic list of PanelManagers.
-        #   TODO: Implement popup panels through a stack.
 
-        def __init__(self, window: IWindow):
-            self.window: IWindow = window
-            self._element_tree_manager: ElementTreeManager = ElementTreeManager(window)
+    #   TODO: Implement tabs through a cyclic list of PanelManagers.
+    #   TODO: Implement popup panels through a stack.
 
-        def get_input(self) -> int:
-            return self.window.get_input()
+    def __init__(self):
+        self._window: IWindow = None
+        self._element_tree_manager: ElementTreeManager = None
 
-        def get_max_yx(self) -> Tuple[int, int]:
-            return self.window.get_max_yx()
+    @property
+    def window(self) -> IWindow:
+        return self._window
 
-        def delete(self, y_pos: int, x_pos: int) -> None:
-            self.window.delete(y_pos, x_pos)
+    @window.setter
+    def window(self, window: IWindow):
+        self._window: IWindow = window
+        self._element_tree_manager: ElementTreeManager = ElementTreeManager(window)
 
-        def clear(self) -> None:
-            self.window.clear()
+    def get_input(self) -> int:
+        return self.window.get_input()
 
-        def erase(self) -> None:
-            self.window.erase()
+    def get_max_yx(self) -> Tuple[int, int]:
+        return self.window.get_max_yx()
 
-        def refresh(self) -> None:
-            self.window.refresh()
+    def delete(self, y_pos: int, x_pos: int) -> None:
+        self.window.delete(y_pos, x_pos)
 
-        def display(self) -> None:
-            self.erase()
-            for child in self._element_tree_manager.get_elements():
-                child.render()
-            self.refresh()
+    def clear(self) -> None:
+        self.window.clear()
 
-        def add_element(self, child: GuiElement) -> None:
-            self._element_tree_manager.add_element(child)
+    def erase(self) -> None:
+        self.window.erase()
 
-        def get_next(self) -> GuiElement:
-            return self._element_tree_manager.get_next()
+    def refresh(self) -> None:
+        self.window.refresh()
 
-        def get_active(self) -> GuiElement:
-            return self._element_tree_manager.get_active()
+    def display(self) -> None:
+        self.erase()
+        for child in self._element_tree_manager.get_elements():
+            child.render()
+        self.refresh()
 
-    instance: _WindowManager = None
+    def add_element(self, child: GuiElement) -> None:
+        self._element_tree_manager.add_element(child)
 
-    def __init__(self, window):
-        if not WindowManager.instance:
-            WindowManager.instance = self._WindowManager(window)
+    def get_next(self) -> GuiElement:
+        return self._element_tree_manager.get_next()
 
-    def __getattr__(self, name):
-        return getattr(self.instance, name)
+    def get_active(self) -> GuiElement:
+        return self._element_tree_manager.get_active()

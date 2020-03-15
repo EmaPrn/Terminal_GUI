@@ -17,8 +17,8 @@ class CursesWindow(IWindow):
             ideally it should be used in conjunction with curses.wrapper
 
     """
-    def __init__(self, screen: curses.window):
-        self.screen: curses.window = screen
+    def __init__(self, screen):
+        self.screen = screen
 
         # Perform initialisation on the curses window
         self.screen.erase()
