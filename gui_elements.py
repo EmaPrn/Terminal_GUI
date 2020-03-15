@@ -191,8 +191,7 @@ class ElementTreeManager(object):
         Based the concept of active element, it can step trough all the leaves of the tree to activate them.
 
         Note:
-        Only one leaf can be active at a given time. If a leaf is active, all the elements crossed in the path
-        from the root to the active leaf will be active as well.
+        Only one leaf can be active at a given time.
 
         Attributes:
             canvas (ICanvas): The canvas where the elements will be drawn. It forms the payload of the root node
@@ -216,49 +215,34 @@ class ElementTreeManager(object):
 
     def _deactivate_current(self) -> None:
         """ Recursively deactivate the current active node and all its parents up to the root node."""
-        node = self.tree.current
-        while isinstance(node.payload, GuiElement):
-            node.payload.is_active = False
-            node = node.parent
+        self.tree.current.is_active = False
 
     def reset_active(self) -> GuiElement:
-        """" This method deactivate the current active element (and all its parents) and activate the element contained
-             in the first leaf. The activation process go through all the nodes in the path between the root
-             node and the leaf.
+        """" This method deactivate the current active element and activate the element contained
+             in the first leaf.
 
              Returns:
                  The newly activated element (the one contained in the first leaf).
         """
 
-        self._deactivate_current()
+        self.tree.current.payload.is_active = False
         self.tree.reset_current()
-
-        node = self.tree.current
-
-        while isinstance(node.payload, GuiElement):
-            node.payload.is_active = True
-            node = node.parent
+        self.tree.current.payload.is_active = True
 
         return self.tree.current.payload
 
     def get_active(self) -> GuiElement:
         return self.tree.current.payload
 
-    def get_next(self) -> GuiElement:
-        """" This method deactivate the current active element (and all its parents) and activate the element contained
-             in the next leaf. The activation process go through all the nodes in the path between the root
-             node and the leaf.
+    def activate_next(self) -> GuiElement:
+        """" This method deactivate the current active element and activate the element contained
+             in the next leaf.
 
              Returns:
                  The newly activated element (the one contained in the leaf).
         """
-        self._deactivate_current()
+        self.tree.current.payload.is_active = False
         self.tree.set_next()
-
-        node = self.tree.current
-
-        while isinstance(node.payload, GuiElement):
-            node.payload.is_active = True
-            node = node.parent
+        self.tree.current.payload.is_active = True
 
         return self.tree.current.payload
