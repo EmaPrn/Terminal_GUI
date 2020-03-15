@@ -1,20 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# imports used for type hints
-from typing import Tuple
 
 # allows the definition of interfaces
 from abc import abstractmethod
 
 import curses
-from window_manager import WindowManager
-from curses_window import CursesWindow
+from _window_manager import WindowManager
+from _curses_window import CursesWindow
 
 
-class TerminalApp(WindowManager):
-    """
-
-    """
+class CursesApp(WindowManager):
 
     @abstractmethod
     def design(self):
@@ -29,6 +24,7 @@ class TerminalApp(WindowManager):
         def set_screen(screen):
             self.window = CursesWindow(screen)
             self.design()
+            self.reset_active()
             self.main()
 
         curses.wrapper(set_screen)

@@ -1,16 +1,21 @@
-from constraints import RelativePosition, CenteredPosition, RelativeSize, AbsoluteSize
+from constraints import position_constraint, size_constraint
 from panels import Panel
 
-from terminal_gui import TerminalApp
+from curses_app import CursesApp
 
 
-class MyApp(TerminalApp):
+class MyApp(CursesApp):
     def design(self):
-        panel_1 = Panel(RelativePosition(0.2), CenteredPosition(), RelativeSize(.4), AbsoluteSize(30), "Panel1", "Test")
+        panel_1 = Panel(position_constraint("relative", .2), position_constraint("centered"),
+                        size_constraint("relative", .4), size_constraint("absolute", 30), "Panel1", "Test")
         self.add_element(panel_1)
-        panel_2 = Panel(RelativePosition(.2), CenteredPosition(), RelativeSize(.25), AbsoluteSize(10), "Panel2", "Test")
+
+        panel_2 = Panel(position_constraint("relative", .2), position_constraint("centered"),
+                        size_constraint("relative", .25), size_constraint("absolute", 10), "Panel2", "Test")
         panel_1.add_child(panel_2)
-        panel_3 = Panel(RelativePosition(.6), CenteredPosition(), RelativeSize(.25), AbsoluteSize(10), "Panel3", "Test")
+
+        panel_3 = Panel(position_constraint("relative", .6), position_constraint("centered"),
+                        size_constraint("relative", .25), size_constraint("absolute", 10), "Panel3", "Test")
         panel_1.add_child(panel_3)
 
     def main(self):
@@ -21,8 +26,6 @@ class MyApp(TerminalApp):
 
         screen_y = 0
         screen_x = 0
-
-        self.get_next()
 
         while k != ord('q'):
 

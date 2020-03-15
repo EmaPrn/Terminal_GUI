@@ -4,7 +4,7 @@
 from typing import Tuple
 
 import curses
-from window_manager import IWindow
+from _window_manager import IWindow
 
 
 class CursesWindow(IWindow):

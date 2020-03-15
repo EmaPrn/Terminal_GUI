@@ -2,10 +2,41 @@
 # -*- coding: utf-8 -*-
 
 from gui_elements import IPositionConstraint, ISizeConstraint, CannotDrawError
-from typing import Union
+from typing import Union, Any
 
 
-class AbsolutePosition(IPositionConstraint):
+class UnknownConstraintError(Exception):
+    """Error to throw when the requested constraint is not defined."""
+    pass
+
+
+def position_constraint(nature: str, value: Any = None) -> IPositionConstraint:
+    if nature.lower() == "absolute":
+        if value:
+            return _AbsolutePosition(value)
+        else:
+            raise(ValueError("A constraint value must be specified for absolute position constraints."))
+    elif nature.lower() == "relative":
+        if value:
+            return _RelativePosition(value)
+        else:
+            raise(ValueError("A constraint value must be specified for relative position constraints."))
+    elif nature.lower() == "centered":
+        return _CenteredPosition()
+    else:
+        raise(UnknownConstraintError("Unknown type of constraint: " + nature))
+
+
+def size_constraint(nature: str, value: Any = None) -> ISizeConstraint:
+    if nature.lower() == "absolute":
+        return _AbsoluteSize(value)
+    elif nature.lower() == "relative":
+        return _RelativeSize(value)
+    else:
+        raise(UnknownConstraintError("Unknown type of constraint: " + nature))
+
+
+class _AbsolutePosition(IPositionConstraint):
     """ This constraint impose a given position to the GUI element.
         The position must respect the boundaries imposed by the parent of the element.
 
@@ -51,7 +82,7 @@ class AbsolutePosition(IPositionConstraint):
         return int(out)
 
 
-class RelativePosition(IPositionConstraint):
+class _RelativePosition(IPositionConstraint):
     """ This constraint impose a given position to the GUI element.
         The position must respect the boundaries imposed by the parent of the element.
 
@@ -95,7 +126,7 @@ class RelativePosition(IPositionConstraint):
         return int(out)
 
 
-class CenteredPosition(IPositionConstraint):
+class _CenteredPosition(IPositionConstraint):
     """ This constraint center the GUI element at the middle of its parent."""
 
     def impose(self, direction: str, h: int, w: int, max_y: int, max_x: int) -> int:
@@ -124,7 +155,7 @@ class CenteredPosition(IPositionConstraint):
         return out
 
 
-class AbsoluteSize(ISizeConstraint):
+class _AbsoluteSize(ISizeConstraint):
     """ This constraint impose a given size to the GUI element.
         The size must respect the boundaries imposed by the parent of the element.
 
@@ -165,7 +196,7 @@ class AbsoluteSize(ISizeConstraint):
         return out
 
 
-class RelativeSize(ISizeConstraint):
+class _RelativeSize(ISizeConstraint):
     """ This constraint impose a given size to the GUI element.
         The size must respect the boundaries imposed by the parent of the element.
 

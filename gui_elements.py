@@ -9,7 +9,7 @@ from typing import Tuple, List
 from abc import ABC, abstractmethod
 
 # Import needed by ElementTreeManager
-from tree import Node, Tree
+from _tree import Node, Tree
 
 
 class CannotDrawError(Exception):
@@ -216,6 +216,26 @@ class ElementTreeManager(object):
         while isinstance(node.payload, GuiElement):
             node.payload.is_active = False
             node = node.parent
+
+    def reset_active(self) -> None:
+        """" This method deactivate the current active element (and all its parents) and activate the element contained
+             in the first leaf. The activation process go through all the nodes in the path between the root
+             node and the leaf.
+
+             Returns:
+                 The newly activated element (the one contained in the first leaf).
+        """
+
+        self._deactivate_current()
+        self.tree.reset_current()
+
+        node = self.tree.current
+
+        while isinstance(node.payload, GuiElement):
+            node.payload.is_active = True
+            node = node.parent
+
+        return self.tree.current.payload
 
     def get_active(self) -> GuiElement:
         return self.tree.current.payload
