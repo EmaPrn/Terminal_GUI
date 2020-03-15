@@ -13,7 +13,7 @@ class Node(object):
     It yields its children when iterated upon.
 
     Attributes:
-        name (str): The identifier of the node. A tree must ensure its uniqueness.
+        name (str): The identifier of the node.
         payload (Any): The object carried by the node. It can be anything.
     """
     def __init__(self, name: str, payload: Any = None):
@@ -47,10 +47,6 @@ class Node(object):
 
     # The check ensure the uniqueness of the child name among its potential brothers before the insertion.
     def add_child(self, child: Node):
-        for existing_child in self._children:
-            if child.name == existing_child.name:
-                raise ValueError("The node already has a child with the same name: " + child.name)
-
         self._children.append(child)
         child.parent = self
 
@@ -123,7 +119,7 @@ class Tree(object):
         return self._current
 
     def get_node(self, name: str, node: Node = None) -> Union[None, Node]:
-        """Method looking for a node in the tree, given its name.
+        """Method looking for the first occurrence of a node in the tree with a given its name.
 
         Parameters:
             name (str): The name of the node to look for.
@@ -132,6 +128,9 @@ class Tree(object):
 
         Returns:
             The searched node if exists, None otherwise.
+
+        Note:
+            For optimal results, the user should pay attention to ensure the uniqueness of the names.
 
         """
         if not node:

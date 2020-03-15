@@ -24,7 +24,7 @@ def position_constraint(nature: str, value: Any = None) -> IPositionConstraint:
     elif nature.lower() == "centered":
         return _CenteredPosition()
     else:
-        raise(UnknownConstraintError("Unknown type of constraint: " + nature))
+        raise(UnknownConstraintError("Unknown type of constraint: {}".format(nature)))
 
 
 def size_constraint(nature: str, value: Any = None) -> ISizeConstraint:
@@ -33,7 +33,7 @@ def size_constraint(nature: str, value: Any = None) -> ISizeConstraint:
     elif nature.lower() == "relative":
         return _RelativeSize(value)
     else:
-        raise(UnknownConstraintError("Unknown type of constraint: " + nature))
+        raise(UnknownConstraintError("Unknown type of constraint: {}".format(nature)))
 
 
 class _AbsolutePosition(IPositionConstraint):
