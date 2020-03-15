@@ -68,7 +68,7 @@ class Panel(GuiElement):
         self.draw_rectangle(-1, -1, self.h - 2, self.w - 2)
 
         if self.is_active:
-            self.draw(-1, 0, " " + self.title[:self.w - 4] + " ", curses.A_BLINK)
+            self.draw(-1, 0, " " + self.title[:self.w - 4] + " ", curses.A_BLINK | curses.A_BOLD)
         else:
             self.draw(-1, 0, " " + self.title[:self.w - 4] + " ")
 
