@@ -37,9 +37,10 @@ class Panel(GuiElement):
 
     def render(self) -> None:
         try:
-            if self.has_borders:
-                self.draw_borders()
-            self.draw_children()
+            if self.h > 1:
+                if self.has_borders:
+                    self.draw_borders()
+                self.draw_children()
         except CannotDrawError:
             pass
 
@@ -53,7 +54,7 @@ class Panel(GuiElement):
         else:
             title = self.title
 
-        self.draw_rectangle(0, 0, self.h, self.w)
+        self.draw_rectangle(0, 0, self.h - 1, self.w - 1)
 
         x_title = (self.w - len(title) - 2) // 2
         if x_title >= 0:
