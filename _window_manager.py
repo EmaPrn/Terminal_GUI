@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # imports used for type hints
-from typing import Tuple
+from typing import Tuple, Union
 
 # allows the definition of interfaces
 from abc import abstractmethod
@@ -38,20 +38,14 @@ class WindowManager(object):
     """Manages the low level API for rendering the elements displayed on the window an catch user interaction.
        It takes care of exposing the current active element and provides methods to activate a new one.
 
-       Note:
-           Be careful, it is implemented as a singleton! Only one instance of WindowManager can exist at a given time.
-
-       Parameters:
-           window (Window): The window object wrapping the low level APIs.
-
     """
 
     #   TODO: Implement tabs through a cyclic list of PanelManagers.
     #   TODO: Implement popup panels through a stack.
 
     def __init__(self):
-        self._window: IWindow = None
-        self._element_tree_manager: ElementTreeManager = None
+        self._window: Union[None, IWindow] = None
+        self._element_tree_manager: Union[None, ElementTreeManager] = None
 
     @property
     def window(self) -> IWindow:
@@ -80,7 +74,7 @@ class WindowManager(object):
     def refresh(self) -> None:
         self.window.refresh()
 
-    def display(self) -> None:
+    def render(self) -> None:
         self.erase()
         for child in self._element_tree_manager.get_elements():
             child.render()
@@ -97,3 +91,4 @@ class WindowManager(object):
 
     def reset_active(self) -> GuiElement:
         return self._element_tree_manager.reset_active()
+

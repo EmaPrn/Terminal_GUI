@@ -119,6 +119,9 @@ class GuiElement(ICanvas):
 
         self.is_active: bool = False
 
+        self._start_drawing_x = 0
+        self._start_drawing_y = 0
+
     # The use of @property allows to hide the existence of the node.
     @property
     def parent(self) -> GuiElement:
@@ -162,8 +165,8 @@ class GuiElement(ICanvas):
 
     def draw(self, y_pos: int, x_pos: int, text: str, *args) -> None:
         """Implements the method of the ICanvas interface."""
-        x = x_pos + self.x
-        y = y_pos + self.y
+        x = x_pos + self._start_drawing_x + self.x
+        y = y_pos + self._start_drawing_y + self.y
         max_size = self.get_max_yx()[1] - x_pos
 
         if len(text) > max_size:
@@ -173,7 +176,8 @@ class GuiElement(ICanvas):
 
     def draw_rectangle(self, uly: int, ulx: int, lry: int, lrx: int) -> None:
         """Implements the method of the ICanvas interface."""
-        self.parent.draw_rectangle(uly + self.y, ulx + self.x, lry + self.y, lrx + self.x)
+        self.parent.draw_rectangle(uly + self._start_drawing_y + self.y, ulx + self._start_drawing_x + self.x,
+                                   lry + self._start_drawing_y + self.y, lrx + self._start_drawing_x + self.x)
 
     @abstractmethod
     def render(self) -> None:
@@ -217,7 +221,7 @@ class ElementTreeManager(object):
             node.payload.is_active = False
             node = node.parent
 
-    def reset_active(self) -> None:
+    def reset_active(self) -> GuiElement:
         """" This method deactivate the current active element (and all its parents) and activate the element contained
              in the first leaf. The activation process go through all the nodes in the path between the root
              node and the leaf.

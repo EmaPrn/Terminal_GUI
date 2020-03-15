@@ -23,8 +23,7 @@ class _CursesWindow(IWindow):
         self.screen = screen
 
         # Perform initialisation on the curses window
-        self.screen.erase()
-        self.screen.refresh()
+        curses.curs_set(0)
 
     def get_input(self) -> int:
         return self.screen.getch()
@@ -100,6 +99,7 @@ class CursesApp(WindowManager):
             self.window = _CursesWindow(screen)
             self.design()
             self.reset_active()
+            self.refresh()
             self.main()
 
         curses.wrapper(set_screen)

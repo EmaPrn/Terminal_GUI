@@ -19,9 +19,6 @@ class MyApp(CursesApp):
         panel_1.add_child(panel_3)
 
     def main(self):
-        self.clear()
-        self.refresh()
-
         k = 0
 
         screen_y = 0
@@ -31,14 +28,14 @@ class MyApp(CursesApp):
 
             if k == ord('a'):
                 self.get_next()
-                self.display()
+                self.render()
 
             old_screen_y = screen_y
             old_screen_x = screen_x
             screen_y, screen_x = self.get_max_yx()
 
             if screen_y != old_screen_y or screen_x != old_screen_x:
-                self.display()
+                self.render()
 
             # Wait for next input
             k = self.get_input()

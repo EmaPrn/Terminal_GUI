@@ -12,12 +12,12 @@ class UnknownConstraintError(Exception):
 
 def position_constraint(nature: str, value: Any = None) -> IPositionConstraint:
     if nature.lower() == "absolute":
-        if value:
+        if value != None:
             return _AbsolutePosition(value)
         else:
             raise(ValueError("A constraint value must be specified for absolute position constraints."))
     elif nature.lower() == "relative":
-        if value:
+        if value != None:
             return _RelativePosition(value)
         else:
             raise(ValueError("A constraint value must be specified for relative position constraints."))

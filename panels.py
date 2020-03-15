@@ -3,8 +3,9 @@
 
 # Imports used for type hints
 from __future__ import annotations
-from typing import List
+from typing import List, Tuple
 
+import curses
 from gui_elements import CannotDrawError, IPositionConstraint, ISizeConstraint, GuiElement
 
 
@@ -30,10 +31,25 @@ class Panel(GuiElement):
 
         self.has_borders: bool = has_borders
 
+        if has_borders:
+            self._start_drawing_x = 1
+            self._start_drawing_y = 1
+
     # The use of @property allows to hide the existence of the node.
     @property
     def children(self) -> List[GuiElement]:
         return [child.payload for child in self.node]
+
+    def get_max_yx(self) -> Tuple[int, int]:
+        """Implements the method of the ICanvas interface.
+
+        Returns:
+            The size of the object as boundaries for its children.
+        """
+        if self.has_borders:
+            return self.h - 2, self.w - 2
+        else:
+            return self.h, self.w
 
     def render(self) -> None:
         try:
@@ -49,22 +65,18 @@ class Panel(GuiElement):
         The title is highlighted if the panel is active
 
         """
+        self.draw_rectangle(-1, -1, self.h - 2, self.w - 2)
+
         if self.is_active:
-            title = "A: " + self.title
+            self.draw(-1, 0, " " + self.title[:self.w - 4] + " ", curses.A_BLINK)
         else:
-            title = self.title
-
-        self.draw_rectangle(0, 0, self.h - 1, self.w - 1)
-
-        x_title = (self.w - len(title) - 2) // 2
-        if x_title >= 0:
-            self.draw(0, x_title, " " + title + " ")
-        else:
-            self.draw(0, 1, " " + title[:self.w - 3] + ". ")
+            self.draw(-1, 0, " " + self.title[:self.w - 4] + " ")
 
     def draw_children(self) -> None:
         for elem in self.children:
-            elem.render()
+            # Draw child only if it can fit entirely inside the panel.
+            if (elem.y + elem.h + 1 < self.h) and (elem.x + elem.w + 1 < self.w):
+                elem.render()
 
     def add_child(self, elem: GuiElement) -> None:
         self.node.add_child(elem.node)
