@@ -46,8 +46,8 @@ class WindowManager(object):
 
     """
     class _WindowManager:
-        #   TODO: Implement tabs trough a cyclic list of PanelManagers.
-        #   TODO: Implement popup panels trough a stack.
+        #   TODO: Implement tabs through a cyclic list of PanelManagers.
+        #   TODO: Implement popup panels through a stack.
 
         def __init__(self, window: IWindow):
             self.window: IWindow = window
