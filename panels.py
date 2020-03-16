@@ -5,8 +5,7 @@
 from __future__ import annotations
 from typing import List, Tuple
 
-import curses
-from gui_elements import CannotDrawError, IPositionConstraint, ISizeConstraint, GuiElement
+from gui_elements import CannotDrawError, IPositionConstraint, ISizeConstraint, GuiElement, DrawAttributes
 
 
 class Panel(GuiElement):
@@ -68,7 +67,7 @@ class Panel(GuiElement):
         self.draw_rectangle(-1, -1, self.h - 2, self.w - 2)
 
         if self.is_active:
-            self.draw(-1, 0, " " + self.title[:self.w - 4] + " ", curses.A_BLINK | curses.A_BOLD)
+            self.draw(-1, 0, " " + self.title[:self.w - 4] + " ", DrawAttributes.BOLD | DrawAttributes.CYAN)
         else:
             self.draw(-1, 0, " " + self.title[:self.w - 4] + " ")
 

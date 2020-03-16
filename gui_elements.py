@@ -12,6 +12,20 @@ from abc import ABC, abstractmethod
 from _tree import Node, Tree
 
 
+class DrawAttributes(object):
+    # Flags for drawing options
+    BLINK = 2
+    HIGHLIGHTED = 4
+    UNDERLINE = 8
+    BOLD = 16
+    RED = 32
+    GREEN = 64
+    YELLOW = 128
+    BLUE = 256
+    MAGENTA = 512
+    CYAN = 1024
+
+
 class CannotDrawError(Exception):
     """Error to throw when a constraint cannot be satisfied."""
     pass
@@ -64,14 +78,14 @@ class ICanvas(ABC):
         pass
 
     @abstractmethod
-    def draw(self, y_pos, x_pos, text, *args):
+    def draw(self, y_pos, x_pos, text, attr=0):
         """Draw a string of text at a given (relative) position.
 
         Parameters:
             y_pos (int): The relative y position to start drawing the text.
             x_pos (int): The relative x position to start drawing the text.
             text (str): The text to draw.
-            args: Optional parameters to specify text styles.
+            attr: Optional parameters to specify text styles.
         """
         pass
 
@@ -163,7 +177,7 @@ class GuiElement(ICanvas):
         """
         return self.h, self.w
 
-    def draw(self, y_pos: int, x_pos: int, text: str, *args) -> None:
+    def draw(self, y_pos: int, x_pos: int, text: str, attr: int = 0) -> None:
         """Implements the method of the ICanvas interface."""
         x = x_pos + self._start_drawing_x + self.x
         y = y_pos + self._start_drawing_y + self.y
@@ -172,7 +186,7 @@ class GuiElement(ICanvas):
         if len(text) > max_size:
             text = text[:max_size]
 
-        self.parent.draw(y, x, text, *args)
+        self.parent.draw(y, x, text, attr)
 
     def draw_rectangle(self, uly: int, ulx: int, lry: int, lrx: int) -> None:
         """Implements the method of the ICanvas interface."""

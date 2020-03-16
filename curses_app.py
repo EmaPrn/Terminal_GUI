@@ -7,7 +7,8 @@ from typing import Tuple
 
 import curses
 from _window_manager import IWindow, WindowManager
-
+from gui_elements import DrawAttributes
+from math import log2
 
 class _CursesWindow(IWindow):
     """ Implements the IWindow interface to wrap the curses methods with APIs to interact with the terminal.
@@ -24,18 +25,24 @@ class _CursesWindow(IWindow):
 
         # Perform initialisation on the curses window
         curses.curs_set(0)
+        curses.init_pair(1, curses.COLOR_RED, curses.COLOR_BLACK)
+        curses.init_pair(2, curses.COLOR_GREEN, curses.COLOR_BLACK)
+        curses.init_pair(3, curses.COLOR_YELLOW, curses.COLOR_BLACK)
+        curses.init_pair(4, curses.COLOR_BLUE, curses.COLOR_BLACK)
+        curses.init_pair(5, curses.COLOR_MAGENTA, curses.COLOR_BLACK)
+        curses.init_pair(6, curses.COLOR_CYAN, curses.COLOR_BLACK)
 
     def get_input(self) -> int:
         return self.screen.getch()
 
-    def draw(self, y_pos: int, x_pos: int, text: str, *attr) -> None:
+    def draw(self, y_pos: int, x_pos: int, text: str, attr=0) -> None:
         """Draw a string of text at a given (relative) position.
 
         Parameters:
             y_pos (int): The relative y position to start drawing the text.
             x_pos (int): The relative x position to start drawing the text.
             text (str): The text to draw.
-            *attr: Optional parameters to specify text styles.
+            attr: Optional parameters to specify text styles.
         """
 
         max_y, max_x = self.get_max_yx()
@@ -45,7 +52,32 @@ class _CursesWindow(IWindow):
             if len(text) > max_len:
                 text = text[:max_len]
 
-            return self.screen.addstr(y_pos, x_pos, text, *attr)
+            mask = 0
+            if attr & DrawAttributes.BLINK:
+                mask = mask | curses.A_BLINK
+            if (attr & DrawAttributes.HIGHLIGHTED) >> int(log2(DrawAttributes.HIGHLIGHTED)):
+                mask = mask | curses.A_STANDOUT
+            if (attr & DrawAttributes.UNDERLINE) >> int(log2(DrawAttributes.UNDERLINE)):
+                mask = mask | curses.A_UNDERLINE
+            if (attr & DrawAttributes.BOLD) >> int(log2(DrawAttributes.BOLD)):
+                mask = mask | curses.A_BOLD
+            if (attr & DrawAttributes.RED) >> int(log2(DrawAttributes.RED)):
+                mask = mask | curses.color_pair(1)
+            if (attr & DrawAttributes.RED) >> int(log2(DrawAttributes.RED)):
+                mask = mask | curses.color_pair(1)
+            if (attr & DrawAttributes.GREEN) >> int(log2(DrawAttributes.GREEN)):
+                mask = mask | curses.color_pair(2)
+            if (attr & DrawAttributes.YELLOW) >> int(log2(DrawAttributes.YELLOW)):
+                mask = mask | curses.color_pair(3)
+            if (attr & DrawAttributes.BLUE) >> int(log2(DrawAttributes.BLUE)):
+                mask = mask | curses.color_pair(4)
+            if (attr & DrawAttributes.MAGENTA) >> int(log2(DrawAttributes.MAGENTA)):
+                mask = mask | curses.color_pair(5)
+            if (attr & DrawAttributes.CYAN) >> int(log2(DrawAttributes.CYAN)):
+                mask = mask | curses.color_pair(6)
+
+
+            return self.screen.addstr(y_pos, x_pos, text, mask)
 
     def draw_rectangle(self, uly: int, ulx: int, lry: int, lrx: int) -> None:
         """Draw a rectangle with corners at the provided upper-left and lower-right coordinates.
