@@ -91,4 +91,3 @@ class WindowManager(object):
 
     def reset_active(self) -> GuiElement:
         return self._element_tree_manager.reset_active()
-
