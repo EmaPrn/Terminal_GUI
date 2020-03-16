@@ -32,7 +32,6 @@ class MyApp(CursesApp):
 
             if k == ord('a'):
                 self.get_next()
-                self.render()
 
             old_screen_y = screen_y
             old_screen_x = screen_x
