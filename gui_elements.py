@@ -12,7 +12,7 @@ from abc import ABC, abstractmethod
 from _tree import Node, Tree
 
 
-class DrawAttributes(object):
+class TextStyles(object):
     # Flags for drawing options
     BLINK = 2
     HIGHLIGHTED = 4
@@ -46,8 +46,8 @@ class IPositionConstraint(IConstraint):
             direction (str): Either "x" or "y".
             h (int): The height of the caller. Used to impose top, bottom or centered alignments.
             w (int): The width of the caller. Used to impose left, right or centered alignments.
-            max_y: Bounding y value (I.e. the y size of its parent container).
-            max_x: Bounding x value (I.e. the x size of its parent container).
+            max_y (int): Bounding y value (I.e. the y size of its parent container).
+            max_x (int): Bounding x value (I.e. the x size of its parent container).
 
         Returns:
             The computed position if possible, raise CannotDrawError otherwise.
@@ -62,8 +62,8 @@ class ISizeConstraint(IConstraint):
 
         Parameters:
             direction (str): Either "x" or "y".
-            max_y: Bounding y value (I.e. the y size of its parent container).
-            max_x: Bounding x value (I.e. the x size of its parent container).
+            max_y (int): Bounding y value (I.e. the y size of its parent container).
+            max_x (int): Bounding x value (I.e. the x size of its parent container).
 
         Returns:
             The computed size if possible, raise CannotDrawError otherwise.
@@ -78,26 +78,26 @@ class ICanvas(ABC):
         pass
 
     @abstractmethod
-    def draw(self, y_pos, x_pos, text, attr=0):
+    def draw(self, y_pos: int, x_pos: int, text: str, attr: int = 0):
         """Draw a string of text at a given (relative) position.
 
         Parameters:
             y_pos (int): The relative y position to start drawing the text.
             x_pos (int): The relative x position to start drawing the text.
             text (str): The text to draw.
-            attr: Optional parameters to specify text styles.
+            attr (int): Optional parameters to specify text styles.
         """
         pass
 
     @abstractmethod
-    def draw_rectangle(self, uly, ulx, lry, lrx):
+    def draw_rectangle(self, uly: int, ulx: int, lry: int, lrx: int):
         """Draw a rectangle with corners at the provided upper-left and lower-right coordinates.
 
         Parameters:
-            uly: y position of the Upper-Left corner of the rectangle
-            ulx: x position of the Upper-Left corner of the rectangle
-            lry: y position of the Lower-Right corner of the rectangle
-            lrx: x position of the Lower-Right corner of the rectangle
+            uly (int): y position of the Upper-Left corner of the rectangle
+            ulx (int): x position of the Upper-Left corner of the rectangle
+            lry (int): y position of the Lower-Right corner of the rectangle
+            lrx (int): x position of the Lower-Right corner of the rectangle
 
         """
         pass

@@ -7,8 +7,9 @@ from typing import Tuple
 
 import curses
 from _window_manager import IWindow, WindowManager
-from gui_elements import DrawAttributes
+from gui_elements import TextStyles
 from math import log2
+
 
 class _CursesWindow(IWindow):
     """ Implements the IWindow interface to wrap the curses methods with APIs to interact with the terminal.
@@ -52,30 +53,30 @@ class _CursesWindow(IWindow):
             if len(text) > max_len:
                 text = text[:max_len]
 
+            # A bitmask is used to set multiple concurrent text styles:
             mask = 0
-            if attr & DrawAttributes.BLINK:
+            if attr & TextStyles.BLINK:
                 mask = mask | curses.A_BLINK
-            if (attr & DrawAttributes.HIGHLIGHTED) >> int(log2(DrawAttributes.HIGHLIGHTED)):
+            if (attr & TextStyles.HIGHLIGHTED) >> int(log2(TextStyles.HIGHLIGHTED)):
                 mask = mask | curses.A_STANDOUT
-            if (attr & DrawAttributes.UNDERLINE) >> int(log2(DrawAttributes.UNDERLINE)):
+            if (attr & TextStyles.UNDERLINE) >> int(log2(TextStyles.UNDERLINE)):
                 mask = mask | curses.A_UNDERLINE
-            if (attr & DrawAttributes.BOLD) >> int(log2(DrawAttributes.BOLD)):
+            if (attr & TextStyles.BOLD) >> int(log2(TextStyles.BOLD)):
                 mask = mask | curses.A_BOLD
-            if (attr & DrawAttributes.RED) >> int(log2(DrawAttributes.RED)):
+            if (attr & TextStyles.RED) >> int(log2(TextStyles.RED)):
                 mask = mask | curses.color_pair(1)
-            if (attr & DrawAttributes.RED) >> int(log2(DrawAttributes.RED)):
+            if (attr & TextStyles.RED) >> int(log2(TextStyles.RED)):
                 mask = mask | curses.color_pair(1)
-            if (attr & DrawAttributes.GREEN) >> int(log2(DrawAttributes.GREEN)):
+            if (attr & TextStyles.GREEN) >> int(log2(TextStyles.GREEN)):
                 mask = mask | curses.color_pair(2)
-            if (attr & DrawAttributes.YELLOW) >> int(log2(DrawAttributes.YELLOW)):
+            if (attr & TextStyles.YELLOW) >> int(log2(TextStyles.YELLOW)):
                 mask = mask | curses.color_pair(3)
-            if (attr & DrawAttributes.BLUE) >> int(log2(DrawAttributes.BLUE)):
+            if (attr & TextStyles.BLUE) >> int(log2(TextStyles.BLUE)):
                 mask = mask | curses.color_pair(4)
-            if (attr & DrawAttributes.MAGENTA) >> int(log2(DrawAttributes.MAGENTA)):
+            if (attr & TextStyles.MAGENTA) >> int(log2(TextStyles.MAGENTA)):
                 mask = mask | curses.color_pair(5)
-            if (attr & DrawAttributes.CYAN) >> int(log2(DrawAttributes.CYAN)):
+            if (attr & TextStyles.CYAN) >> int(log2(TextStyles.CYAN)):
                 mask = mask | curses.color_pair(6)
-
 
             return self.screen.addstr(y_pos, x_pos, text, mask)
 

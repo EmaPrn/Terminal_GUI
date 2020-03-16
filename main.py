@@ -7,7 +7,7 @@ from curses_app import CursesApp
 class MyApp(CursesApp):
     def design(self):
         panel_1 = Panel(position_constraint("relative", .2), position_constraint("centered"),
-                        size_constraint("relative", .4), size_constraint("absolute", 30), "Panel1", "Test")
+                        size_constraint("relative", .7), size_constraint("absolute", 30), "Panel1", "Test")
         self.add_element(panel_1)
 
         panel_2 = Panel(position_constraint("relative", .2), position_constraint("centered"),
@@ -17,6 +17,10 @@ class MyApp(CursesApp):
         panel_3 = Panel(position_constraint("relative", .6), position_constraint("centered"),
                         size_constraint("relative", .25), size_constraint("absolute", 10), "Panel3", "Test")
         panel_1.add_child(panel_3)
+
+        panel_4 = Panel(position_constraint("absolute", 0), position_constraint("centered"),
+                        size_constraint("relative", 1), size_constraint("relative", 1.), "Panel4", "Test")
+        panel_3.add_child(panel_4)
 
     def main(self):
         k = 0
