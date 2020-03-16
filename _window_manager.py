@@ -78,6 +78,8 @@ class WindowManager(object):
         self.erase()
         for child in self._element_tree_manager.get_elements():
             child.render()
+        if not self._element_tree_manager.get_active().is_visible:
+            self.get_next()
         self.refresh()
 
     def add_element(self, child: GuiElement) -> None:

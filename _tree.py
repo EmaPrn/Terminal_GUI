@@ -118,6 +118,10 @@ class Tree(object):
     def current(self) -> Node:
         return self._current
 
+    @property
+    def leaves(self) -> List[Node]:
+        return [leaf for leaf in _node_iterator(self._root)]
+
     def get_node(self, name: str, node: Node = None) -> Union[None, Node]:
         """Method looking for the first occurrence of a node in the tree with a given its name.
 

@@ -3,7 +3,7 @@
 
 # Imports used for type hints
 from __future__ import annotations
-from typing import Tuple, List
+from typing import Tuple, List, Union
 
 # Allows the definition of interfaces
 from abc import ABC, abstractmethod
@@ -132,9 +132,18 @@ class GuiElement(ICanvas):
         self._h_constraint: ISizeConstraint = h_constraint
 
         self.is_active: bool = False
+        self._is_visible: bool = False
 
         self._start_drawing_x = 0
         self._start_drawing_y = 0
+
+    @property
+    def is_visible(self) -> bool:
+        return self._is_visible
+
+    @is_visible.setter
+    def is_visible(self, is_visible) -> None:
+        self._is_visible = is_visible
 
     # The use of @property allows to hide the existence of the node.
     @property
@@ -241,14 +250,25 @@ class ElementTreeManager(object):
 
         self.tree.current.payload.is_active = False
         self.tree.reset_current()
-        self.tree.current.payload.is_active = True
+
+        first_node = self.tree.set_next()
+        counter = 0
+        while not first_node.payload.is_visible and counter <= len(self.tree.leaves):
+            first_node = self.tree.set_next()
+            counter += 1
+
+        if counter != len(self.tree.leaves):
+            first_node.payload.is_active = True
+            return self.tree.current.payload
+        else:
+            return None
 
         return self.tree.current.payload
 
     def get_active(self) -> GuiElement:
         return self.tree.current.payload
 
-    def activate_next(self) -> GuiElement:
+    def activate_next(self) -> Union[None, GuiElement]:
         """" This method deactivate the current active element and activate the element contained
              in the next leaf.
 
@@ -256,7 +276,15 @@ class ElementTreeManager(object):
                  The newly activated element (the one contained in the leaf).
         """
         self.tree.current.payload.is_active = False
-        self.tree.set_next()
-        self.tree.current.payload.is_active = True
 
-        return self.tree.current.payload
+        next_node = self.tree.set_next()
+        counter = 0
+        while not next_node.payload.is_visible and counter <= len(self.tree.leaves):
+            next_node = self.tree.set_next()
+            counter +=1
+
+        if counter != len(self.tree.leaves):
+            next_node.payload.is_active = True
+            return self.tree.current.payload
+        else:
+            return None

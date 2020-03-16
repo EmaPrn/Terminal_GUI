@@ -34,6 +34,17 @@ class Panel(GuiElement):
             self._start_drawing_x = 1
             self._start_drawing_y = 1
 
+    @property
+    def is_visible(self) -> bool:
+        return self._is_visible
+
+    @is_visible.setter
+    def is_visible(self, is_visible) -> None:
+        self._is_visible = is_visible
+        if not is_visible:
+            for child in self.children:
+                child.is_visible = False
+
     # The use of @property allows to hide the existence of the node.
     @property
     def children(self) -> List[GuiElement]:
@@ -56,8 +67,11 @@ class Panel(GuiElement):
                 if self.has_borders:
                     self.draw_borders()
                 self.draw_children()
+                self.is_visible = True
+            else:
+                self.is_visible = False
         except CannotDrawError:
-            pass
+            self.is_visible = False
 
     def draw_borders(self) -> None:
         """Draw the borders around the panel. The title is displayed at the middle of the top border.
