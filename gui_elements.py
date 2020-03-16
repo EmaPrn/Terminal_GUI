@@ -263,8 +263,6 @@ class ElementTreeManager(object):
         else:
             return None
 
-        return self.tree.current.payload
-
     def get_active(self) -> GuiElement:
         return self.tree.current.payload
 

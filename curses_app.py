@@ -112,9 +112,6 @@ class _CursesWindow(IWindow):
     def erase(self) -> None:
         return self.screen.erase()
 
-    def refresh(self) -> None:
-        return self.screen.refresh()
-
 
 class CursesApp(WindowManager):
 
@@ -132,7 +129,6 @@ class CursesApp(WindowManager):
             self.window = _CursesWindow(screen)
             self.design()
             self.reset_active()
-            self.refresh()
             self.main()
 
         curses.wrapper(set_screen)

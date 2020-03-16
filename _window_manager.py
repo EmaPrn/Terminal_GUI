@@ -29,10 +29,6 @@ class IWindow(ICanvas):
     def erase(self) -> None:
         pass
 
-    @abstractmethod
-    def refresh(self) -> None:
-        pass
-
 
 class WindowManager(object):
     """Manages the low level API for rendering the elements displayed on the window an catch user interaction.
@@ -71,16 +67,12 @@ class WindowManager(object):
     def erase(self) -> None:
         self.window.erase()
 
-    def refresh(self) -> None:
-        self.window.refresh()
-
     def render(self) -> None:
         self.erase()
         for child in self._element_tree_manager.get_elements():
             child.render()
         if not self._element_tree_manager.get_active().is_visible:
             self.get_next()
-        self.refresh()
 
     def add_element(self, child: GuiElement) -> None:
         self._element_tree_manager.add_element(child)
@@ -88,8 +80,10 @@ class WindowManager(object):
     def get_next(self) -> GuiElement:
         old = self._element_tree_manager.get_active()
         new = self._element_tree_manager.activate_next()
-        old.render()
-        new.render()
+        if isinstance(old, GuiElement):
+            old.render()
+        if isinstance(new, GuiElement):
+            new.render()
         return new
 
     def get_active(self) -> GuiElement:
