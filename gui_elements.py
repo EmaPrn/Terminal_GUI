@@ -57,11 +57,13 @@ class IPositionConstraint(IConstraint):
 
 class ISizeConstraint(IConstraint):
     @abstractmethod
-    def impose(self, direction: str, max_y: int, max_x: int):
+    def impose(self, direction: str, min_h: int, min_w: int, max_y: int, max_x: int):
         """Called when trying to impose the size constraint.
 
         Parameters:
             direction (str): Either "x" or "y".
+            min_h (int): Minimum h value to draw the element.
+            min_w (int): Minimum w value to draw the element.
             max_y (int): Bounding y value (I.e. the y size of its parent container).
             max_x (int): Bounding x value (I.e. the x size of its parent container).
 
@@ -137,6 +139,9 @@ class GuiElement(ICanvas):
         self._start_drawing_x = 0
         self._start_drawing_y = 0
 
+        self.min_h = 0
+        self.min_w = 0
+
     @property
     def is_visible(self) -> bool:
         return self._is_visible
@@ -171,12 +176,12 @@ class GuiElement(ICanvas):
     @property
     def w(self) -> int:
         max_y, max_x = self.parent.get_max_yx()
-        return self._w_constraint.impose('x', max_y, max_x)
+        return self._w_constraint.impose('x', self.min_h, self.min_w, max_y, max_x)
 
     @property
     def h(self) -> int:
         max_y, max_x = self.parent.get_max_yx()
-        return self._h_constraint.impose('y', max_y, max_x)
+        return self._h_constraint.impose('y', self.min_h, self.min_w, max_y, max_x)
 
     def get_max_yx(self) -> Tuple[int, int]:
         """Implements the method of the ICanvas interface.

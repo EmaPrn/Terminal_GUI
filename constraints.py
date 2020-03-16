@@ -53,8 +53,8 @@ class _AbsolutePosition(IPositionConstraint):
 
         Parameters:
             direction (str): Either "x" or "y".
-            h (int): Not requested by this constraint.
-            w (int): Not requested by this constraint.
+            h (int): The height of the caller.
+            w (int): The width of the caller.
             max_y (int): Bounding y value (I.e. the y size of its parent container).
             max_x (int): Bounding x value (I.e. the x size of its parent container).
 
@@ -69,12 +69,16 @@ class _AbsolutePosition(IPositionConstraint):
                 out = self.value
             elif self.value >= max_x:
                 raise CannotDrawError('Imposed x must be lower than parent width.')
+            elif self.value + w - 1 >= max_x:
+                raise CannotDrawError('The GUI element must fit entirely inside its parent.')
 
         elif direction == "y":
             if self.value < max_y:
                 out = self.value
             elif self.value >= max_y:
                 raise CannotDrawError('Imposed y must be lower than parent height.')
+            elif self.value + h - 1 >= max_y:
+                raise CannotDrawError('The GUI element must fit entirely inside its parent.')
 
         else:
             raise ValueError('Incorrect direction. It must be either x or y (case sensitive).')
@@ -106,8 +110,8 @@ class _RelativePosition(IPositionConstraint):
 
         Parameters:
             direction (str): Either "x" or "y".
-            h (int): Not requested by this constraint.
-            w (int): Not requested by this constraint.
+            h (int): The height of the caller.
+            w (int): The width of the caller.
             max_y (int): Bounding y value (I.e. the y size of its parent container).
             max_x (int): Bounding x value (I.e. the x size of its parent container).
 
@@ -116,9 +120,13 @@ class _RelativePosition(IPositionConstraint):
         """
         if direction == "x":
             out = int(max_x * self.value)
+            if out + w - 1 >= max_x:
+                raise CannotDrawError('The GUI element must fit entirely inside its parent.')
 
         elif direction == "y":
             out = int(max_y * self.value)
+            if out + h - 1 >= max_y:
+                raise CannotDrawError('The GUI element must fit entirely inside its parent.')
 
         else:
             raise ValueError('Incorrect direction. It must be either x or y (case sensitive).')
@@ -134,8 +142,8 @@ class _CenteredPosition(IPositionConstraint):
 
         Parameters:
             direction (str): Either "x" or "y".
-            h (int): Not requested by this constraint.
-            w (int): Not requested by this constraint.
+            h (int): The height of the caller.
+            w (int): The width of the caller.
             max_y (int): Bounding y value (I.e. the y size of its parent container).
             max_x (int): Bounding x value (I.e. the x size of its parent container).
 
@@ -152,6 +160,9 @@ class _CenteredPosition(IPositionConstraint):
         else:
             raise ValueError('Incorrect direction. It must be either x or y (case sensitive).')
 
+        if out < 0:
+            raise CannotDrawError('The GUI element must be smaller than its parent.')
+
         return out
 
 
@@ -167,11 +178,13 @@ class _AbsoluteSize(ISizeConstraint):
     def __init__(self, value: int):
         self.value: int = value
 
-    def impose(self, direction: str, max_y: int, max_x: int) -> int:
+    def impose(self, direction: str, min_h: int, min_w: int, max_y: int, max_x: int) -> int:
         """Called when trying to impose the size constraint.
 
         Parameters:
             direction (str): Either "x" or "y".
+            min_h (int): Minimum h value to draw the element.
+            min_w (int): Minimum w value to draw the element.
             max_y: Bounding y value (I.e. the y size of its parent container).
             max_x: Bounding x value (I.e. the x size of its parent container).
 
@@ -184,12 +197,18 @@ class _AbsoluteSize(ISizeConstraint):
         if direction == "x":
             if self.value < max_x:
                 out = self.value
+
+            if self.value < min_w:
+                raise CannotDrawError('Imposed w must be bigger than parent min_w.')
             elif self.value >= max_x:
                 raise CannotDrawError('Imposed w must be lower than parent width.')
 
         if direction == "y":
             if self.value < max_y:
                 out = self.value
+
+            if self.value < min_h:
+                raise CannotDrawError('Imposed w must be bigger than parent min_h.')
             elif self.value >= max_y:
                 raise CannotDrawError('Imposed h must be lower than parent height.')
 
@@ -214,11 +233,13 @@ class _RelativeSize(ISizeConstraint):
         else:
             raise ValueError('Imposed value must be comprised between 0 and 1.')
 
-    def impose(self, direction: str, max_y: int, max_x: int) -> int:
+    def impose(self, direction: str, min_h: int, min_w: int, max_y: int, max_x: int) -> int:
         """Called when trying to impose the size constraint.
 
         Parameters:
             direction (str): Either "x" or "y".
+            min_h (int): Minimum h value to draw the element.
+            min_w (int): Minimum w value to draw the element.
             max_y: Bounding y value (I.e. the y size of its parent container).
             max_x: Bounding x value (I.e. the x size of its parent container).
 
@@ -230,8 +251,12 @@ class _RelativeSize(ISizeConstraint):
 
         if direction == "x":
             out = max_x * self.value
+            if out < min_w:
+                raise CannotDrawError('Imposed w must be bigger than parent min_w.')
 
         if direction == "y":
             out = max_y * self.value
+            if out < min_h:
+                raise CannotDrawError('Imposed h must be bigger than parent min_h.')
 
         return int(out)

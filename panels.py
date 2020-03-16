@@ -33,6 +33,8 @@ class Panel(GuiElement):
         if has_borders:
             self._start_drawing_x = 1
             self._start_drawing_y = 1
+            self.min_h = 2
+            self.min_w = 2
 
     @property
     def is_visible(self) -> bool:
@@ -63,13 +65,10 @@ class Panel(GuiElement):
 
     def render(self) -> None:
         try:
-            if self.h > 1:
-                if self.has_borders:
-                    self.draw_borders()
-                self.draw_children()
-                self.is_visible = True
-            else:
-                self.is_visible = False
+            if self.has_borders:
+                self.draw_borders()
+            self.draw_children()
+            self.is_visible = True
         except CannotDrawError:
             self.is_visible = False
 
@@ -88,8 +87,7 @@ class Panel(GuiElement):
     def draw_children(self) -> None:
         for elem in self.children:
             # Draw child only if it can fit entirely inside the panel.
-            if (elem.y + elem.h + 1 < self.h) and (elem.x + elem.w + 1 < self.w):
-                elem.render()
+            elem.render()
 
     def add_child(self, elem: GuiElement) -> None:
         self.node.add_child(elem.node)
