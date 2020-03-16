@@ -199,7 +199,7 @@ class _AbsoluteSize(ISizeConstraint):
                 out = self.value
 
             if self.value < min_w:
-                raise CannotDrawError('Imposed w must be bigger than parent min_w.')
+                raise CannotDrawError('Imposed w must be bigger than imposed min_w.')
             elif self.value >= max_x:
                 raise CannotDrawError('Imposed w must be lower than parent width.')
 
@@ -208,7 +208,7 @@ class _AbsoluteSize(ISizeConstraint):
                 out = self.value
 
             if self.value < min_h:
-                raise CannotDrawError('Imposed w must be bigger than parent min_h.')
+                raise CannotDrawError('Imposed w must be bigger than imposed min_h.')
             elif self.value >= max_y:
                 raise CannotDrawError('Imposed h must be lower than parent height.')
 
@@ -252,11 +252,11 @@ class _RelativeSize(ISizeConstraint):
         if direction == "x":
             out = max_x * self.value
             if out < min_w:
-                raise CannotDrawError('Imposed w must be bigger than parent min_w.')
+                raise CannotDrawError('Imposed w must be bigger than imposed min_w.')
 
         if direction == "y":
             out = max_y * self.value
             if out < min_h:
-                raise CannotDrawError('Imposed h must be bigger than parent min_h.')
+                raise CannotDrawError('Imposed h must be bigger than imposed min_h.')
 
         return int(out)
