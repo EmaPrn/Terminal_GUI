@@ -26,7 +26,7 @@ class _BlessedWindow(IWindow):
 
     def get_input(self) -> int:
         with self.screen.cbreak():
-            return self.screen.inkey(timeout=1./25)
+            return self.screen.inkey(timeout=1./25).code
 
     def draw(self, y_pos: int, x_pos: int, text: str, attr=0) -> None:
         """Draw a string of text at a given (relative) position.

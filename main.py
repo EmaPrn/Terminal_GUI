@@ -1,9 +1,11 @@
 from constraints import position_constraint, size_constraint
 from panels import Panel
+from checkbox import Checkbox
 
-from blessed_app import BlessedApp
+from curses_app import CursesApp
 
-class MyApp(BlessedApp):
+
+class MyApp(CursesApp):
     def design(self):
         panel_1 = Panel(position_constraint("relative", .2), position_constraint("centered"),
                         size_constraint("relative", .7), size_constraint("relative", .7), "Panel1",
@@ -25,6 +27,9 @@ class MyApp(BlessedApp):
                         max_w=25, title="Test")
         panel_3.add_child(panel_4)
 
+        checkbox_1 = Checkbox(position_constraint("absolute", 0), position_constraint("absolute", 0), "chk1", "Testo")
+        panel_2.add_child(checkbox_1)
+
     def main(self):
         k = 0
 
@@ -32,10 +37,13 @@ class MyApp(BlessedApp):
         screen_x = 0
         refresh_flag = False
 
-        while k != 'q':
+        while k != 361: # ESC_KEY:
 
-            if k == 'a':
+            if k == 512:  # KEY_TAB
                 self.get_next()
+                refresh_flag = True
+            elif k == 343:
+                self.get_active().interact(k)
                 refresh_flag = True
 
             old_screen_y = screen_y
@@ -50,7 +58,6 @@ class MyApp(BlessedApp):
 
             if refresh_flag:
                 self.refresh()
-                refresh_flag = False
 
         self.clear()
 

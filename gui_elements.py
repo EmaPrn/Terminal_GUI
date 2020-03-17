@@ -109,7 +109,6 @@ class GuiElement(ICanvas):
         Implements the ICanvas interface as it is possible to draw other elements on top of it.
 
         Attributes:
-            title (str): The name of the element. Can be shown after rendering.
             element_id (str): The unique identifier of the element.
             y_constraint (IPositionConstraint): Constraint for the y position of the element.
             x_constraint (IPositionConstraint): Constraint for the x position of the element.
@@ -120,9 +119,7 @@ class GuiElement(ICanvas):
     """
     def __init__(self, y_constraint: IPositionConstraint, x_constraint: IPositionConstraint,
                  h_constraint: ISizeConstraint, w_constraint: ISizeConstraint, element_id: str, min_h: int = 0,
-                 min_w: int = 0, max_h: int = -1, max_w: int = -1, title: str = ''):
-
-        self.title: str = title
+                 min_w: int = 0, max_h: int = -1, max_w: int = -1):
 
         # Each element is associated to a node.
         # It allows to invoke its parent drawing functions up to the window render itself.
@@ -222,6 +219,9 @@ class GuiElement(ICanvas):
             It should use the draw method."""
         pass
 
+    def interact(self, value: int) -> None:
+        pass
+
 
 class ElementTreeManager(object):
     """Manage a tree made of panels.
@@ -293,7 +293,7 @@ class ElementTreeManager(object):
         counter = 0
         while not next_node.payload.is_visible and counter <= len(self.tree.leaves):
             next_node = self.tree.set_next()
-            counter +=1
+            counter += 1
 
         if counter != len(self.tree.leaves):
             next_node.payload.is_active = True

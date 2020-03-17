@@ -27,9 +27,10 @@ class Panel(GuiElement):
                  title: str = '', has_borders: bool = True):
 
         super().__init__(y_constraint, x_constraint, h_constraint, w_constraint, panel_id,
-                         max_h=max_h, max_w=max_w, title=title)
+                         max_h=max_h, max_w=max_w)
 
         self.has_borders: bool = has_borders
+        self.title = title
 
         if has_borders:
             self._start_drawing_x = 1
