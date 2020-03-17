@@ -7,19 +7,23 @@ from time import sleep
 class MyApp(BlessedApp):
     def design(self):
         panel_1 = Panel(position_constraint("relative", .2), position_constraint("centered"),
-                        size_constraint("relative", .7), size_constraint("relative", .7), "Panel1", "Test")
+                        size_constraint("relative", .7), size_constraint("relative", .7), "Panel1",
+                        max_w=25, title="Test")
         self.add_element(panel_1)
 
         panel_2 = Panel(position_constraint("relative", .2), position_constraint("centered"),
-                        size_constraint("relative", .25), size_constraint("relative", .7), "Panel2", "Test")
+                        size_constraint("relative", .25), size_constraint("relative", .7), "Panel2",
+                        max_w=30, title="Test")
         panel_1.add_child(panel_2)
 
         panel_3 = Panel(position_constraint("relative", .6), position_constraint("centered"),
-                        size_constraint("relative", .25), size_constraint("relative", .7), "Panel3", "Test")
+                        size_constraint("relative", .25), size_constraint("relative", .7), "Panel3",
+                        max_w=30, title="Test")
         panel_1.add_child(panel_3)
 
         panel_4 = Panel(position_constraint("absolute", 0), position_constraint("centered"),
-                        size_constraint("relative", 1), size_constraint("relative", .7), "Panel4", "Test")
+                        size_constraint("relative", 1), size_constraint("relative", .7), "Panel4",
+                        max_w=25, title="Test")
         panel_3.add_child(panel_4)
 
     def main(self):

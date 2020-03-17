@@ -119,7 +119,8 @@ class GuiElement(ICanvas):
                               Can modify the appearance on screen of the element.
     """
     def __init__(self, y_constraint: IPositionConstraint, x_constraint: IPositionConstraint,
-                 h_constraint: ISizeConstraint, w_constraint: ISizeConstraint, element_id: str, title: str = ''):
+                 h_constraint: ISizeConstraint, w_constraint: ISizeConstraint, element_id: str, min_h: int = 0,
+                 min_w: int = 0, max_h: int = -1, max_w: int = -1, title: str = ''):
 
         self.title: str = title
 
@@ -138,8 +139,11 @@ class GuiElement(ICanvas):
         self._start_drawing_x = 0
         self._start_drawing_y = 0
 
-        self.min_h = 0
-        self.min_w = 0
+        self.min_h = min_h
+        self.min_w = min_w
+
+        self.max_h = max_h
+        self.max_w = max_w
 
     @property
     def is_visible(self) -> bool:
@@ -175,12 +179,18 @@ class GuiElement(ICanvas):
     @property
     def w(self) -> int:
         max_y, max_x = self.parent.get_max_yx()
-        return self._w_constraint.impose('x', self.min_h, self.min_w, max_y, max_x)
+        if self.max_w >= 0:
+            return min(self.max_w, self._w_constraint.impose('x', self.min_h, self.min_w, max_y, max_x))
+        else:
+            return self._w_constraint.impose('x', self.min_h, self.min_w, max_y, max_x)
 
     @property
     def h(self) -> int:
         max_y, max_x = self.parent.get_max_yx()
-        return self._h_constraint.impose('y', self.min_h, self.min_w, max_y, max_x)
+        if self.max_h >= 0:
+            return min(self.max_h, self._h_constraint.impose('y', self.min_h, self.min_w, max_y, max_x))
+        else:
+            return self._h_constraint.impose('y', self.min_h, self.min_w, max_y, max_x)
 
     def get_max_yx(self) -> Tuple[int, int]:
         """Implements the method of the ICanvas interface.

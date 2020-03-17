@@ -23,10 +23,11 @@ class Panel(GuiElement):
 
     """
     def __init__(self, y_constraint: IPositionConstraint, x_constraint: IPositionConstraint,
-                 h_constraint: ISizeConstraint, w_constraint: ISizeConstraint, panel_id: str,
+                 h_constraint: ISizeConstraint, w_constraint: ISizeConstraint, panel_id: str, max_h=-1, max_w=-1,
                  title: str = '', has_borders: bool = True):
 
-        super().__init__(y_constraint, x_constraint, h_constraint, w_constraint, panel_id, title)
+        super().__init__(y_constraint, x_constraint, h_constraint, w_constraint, panel_id,
+                         max_h=max_h, max_w=max_w, title=title)
 
         self.has_borders: bool = has_borders
 
