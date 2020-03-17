@@ -65,8 +65,6 @@ class _CursesWindow(IWindow):
                 mask = mask | curses.A_BOLD
             if (attr & TextStyles.RED) >> int(log2(TextStyles.RED)):
                 mask = mask | curses.color_pair(1)
-            if (attr & TextStyles.RED) >> int(log2(TextStyles.RED)):
-                mask = mask | curses.color_pair(1)
             if (attr & TextStyles.GREEN) >> int(log2(TextStyles.GREEN)):
                 mask = mask | curses.color_pair(2)
             if (attr & TextStyles.YELLOW) >> int(log2(TextStyles.YELLOW)):

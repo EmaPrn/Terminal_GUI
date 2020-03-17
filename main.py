@@ -1,10 +1,10 @@
 from constraints import position_constraint, size_constraint
 from panels import Panel
 
-from curses_app import CursesApp
+from blessed_app import BlessedApp
 
 
-class MyApp(CursesApp):
+class MyApp(BlessedApp):
     def design(self):
         panel_1 = Panel(position_constraint("relative", .2), position_constraint("centered"),
                         size_constraint("relative", .7), size_constraint("absolute", 30), "Panel1", "Test")
@@ -28,9 +28,9 @@ class MyApp(CursesApp):
         screen_y = 0
         screen_x = 0
 
-        while k != ord('q'):
+        while k != 'q':
 
-            if k == ord('a'):
+            if k == 'a':
                 self.get_next()
 
             old_screen_y = screen_y
@@ -38,10 +38,13 @@ class MyApp(CursesApp):
             screen_y, screen_x = self.get_max_yx()
 
             if screen_y != old_screen_y or screen_x != old_screen_x:
+                self.clear()
                 self.render()
 
             # Wait for next input
             k = self.get_input()
+
+        self.clear()
 
 
 if __name__ == "__main__":
