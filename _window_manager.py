@@ -60,25 +60,34 @@ class WindowManager(object):
     def clear(self) -> None:
         self.window.clear()
 
-    def refresh(self) -> None:
-        self.window.clear()
-        self.render()
-
     def render(self) -> None:
         self.clear()
         for child in self._element_tree_manager.get_elements():
             child.render()
-        if not self._element_tree_manager.get_active().is_visible:
-            self.get_next()
+        if isinstance(self._element_tree_manager.get_current(), GuiElement):
+            if not self._element_tree_manager.get_current().is_visible:
+                self.get_next()
 
     def add_element(self, child: GuiElement) -> None:
         self._element_tree_manager.add_element(child)
 
     def get_next(self) -> GuiElement:
-        return self._element_tree_manager.activate_next()
+        old = self._element_tree_manager.get_current()
+        new = self._element_tree_manager.activate_next()
+        if isinstance(old, GuiElement):
+            old.render()
+        if isinstance(new, GuiElement):
+            new.render()
+        return new
 
     def get_active(self) -> GuiElement:
-        return self._element_tree_manager.get_active()
+        return self._element_tree_manager.get_current()
 
     def reset_active(self) -> GuiElement:
-        return self._element_tree_manager.reset_active()
+        old = self._element_tree_manager.get_current()
+        new = self._element_tree_manager.reset_active()
+        if isinstance(old, GuiElement):
+            old.render()
+        if isinstance(new, GuiElement):
+            new.render()
+        return new

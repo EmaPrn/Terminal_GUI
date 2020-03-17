@@ -69,8 +69,8 @@ class Panel(GuiElement):
         try:
             if self.has_borders:
                 self.draw_borders()
-            self.draw_children()
             self.is_visible = True
+            self.draw_children()
         except CannotDrawError:
             self.is_visible = False
 

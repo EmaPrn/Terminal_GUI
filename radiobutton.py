@@ -9,7 +9,7 @@ from gui_elements import GuiElement, IPositionConstraint, TextStyles, CannotDraw
 from constraints import size_constraint
 
 
-class Checkbox(GuiElement):
+class RadioButton(GuiElement):
     def __init__(self, y_constraint: IPositionConstraint, x_constraint: IPositionConstraint, box_id: str, text: str):
 
         super().__init__(y_constraint, x_constraint, size_constraint("absolute", 1),
@@ -20,14 +20,18 @@ class Checkbox(GuiElement):
         self._is_visible = False
 
     def interact(self, value: int = 0) -> None:
-        self.toggle = False if self.toggle else True
-        self.render()
+        if not self.toggle:
+            for brother in self.parent.node:
+                if isinstance(brother.payload, RadioButton):
+                    brother.payload.toggle = False
+            self.toggle = True
+            self.parent.render()
 
     def render(self) -> None:
         if self.toggle:
-            text = "[x] "
+            text = "(x) "
         else:
-            text = "[ ] "
+            text = "( ) "
 
         text = text + self._text
 

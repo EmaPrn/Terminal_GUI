@@ -1,63 +1,65 @@
 from constraints import position_constraint, size_constraint
 from panels import Panel
+from radiobutton import RadioButton
 from checkbox import Checkbox
 
-from curses_app import CursesApp
+from blessed_app import BlessedApp
+from time import sleep
 
 
-class MyApp(CursesApp):
+class MyApp(BlessedApp):
     def design(self):
         panel_1 = Panel(position_constraint("relative", .2), position_constraint("centered"),
-                        size_constraint("relative", .7), size_constraint("relative", .7), "Panel1",
-                        max_w=50, title="Test")
+                        size_constraint("relative", .7), size_constraint("relative", .7), "Main",
+                        max_w=50, title="Main")
         self.add_element(panel_1)
 
-        panel_2 = Panel(position_constraint("relative", .2), position_constraint("centered"),
-                        size_constraint("relative", .25), size_constraint("relative", .7), "Panel2",
-                        max_w=40, title="Test")
+        panel_2 = Panel(position_constraint("absolute", 0), position_constraint("relative", .05),
+                        size_constraint("relative", .45), size_constraint("relative", .45), "RadioPan",
+                        max_w=40, title="Radio Buttons")
         panel_1.add_child(panel_2)
 
-        panel_3 = Panel(position_constraint("relative", .6), position_constraint("centered"),
-                        size_constraint("relative", .25), size_constraint("relative", .7), "Panel3",
-                        max_w=40, title="Test")
+        radio_1 = RadioButton(position_constraint("absolute", 1), position_constraint("absolute", 0), "rad1", "Radio 1")
+        panel_2.add_child(radio_1)
+
+        radio_2 = RadioButton(position_constraint("absolute", 3), position_constraint("absolute", 0), "rad2", "Radio 2")
+        panel_2.add_child(radio_2)
+
+        panel_3 = Panel(position_constraint("absolute", 0), position_constraint("relative", .5),
+                        size_constraint("relative", .45), size_constraint("relative", .45), "Check Pan",
+                        max_w=40, title="Check Boxes")
         panel_1.add_child(panel_3)
 
-        panel_4 = Panel(position_constraint("absolute", 0), position_constraint("centered"),
-                        size_constraint("relative", 1), size_constraint("relative", .7), "Panel4",
-                        max_w=25, title="Test")
-        panel_3.add_child(panel_4)
+        check_1 = Checkbox(position_constraint("absolute", 1), position_constraint("absolute", 0), "chk1", "Check 1")
+        panel_3.add_child(check_1)
 
-        checkbox_1 = Checkbox(position_constraint("absolute", 0), position_constraint("absolute", 0), "chk1", "Testo")
-        panel_2.add_child(checkbox_1)
+        check_2 = Checkbox(position_constraint("absolute", 3), position_constraint("absolute", 0), "chk2", "Check 2")
+        panel_3.add_child(check_2)
+
 
     def main(self):
         k = 0
 
         screen_y = 0
         screen_x = 0
-        refresh_flag = False
 
-        while k != 361: # ESC_KEY:
+        while k != "q": # ESC_KEY:
 
-            if k == 512:  # KEY_TAB
+            if k == "a":  # KEY_TAB
                 self.get_next()
-                refresh_flag = True
-            elif k == 343:
-                self.get_active().interact(k)
-                refresh_flag = True
+            elif k == "e":
+                self.get_active().interact()
 
             old_screen_y = screen_y
             old_screen_x = screen_x
             screen_y, screen_x = self.get_max_yx()
 
-            if screen_y != old_screen_y or screen_x != old_screen_x:
-                refresh_flag = True
-
             # Wait for next input
             k = self.get_input()
 
-            if refresh_flag:
-                self.refresh()
+            if screen_y != old_screen_y or screen_x != old_screen_x:
+                self.render()
+
 
         self.clear()
 

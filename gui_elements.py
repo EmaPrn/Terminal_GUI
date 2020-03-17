@@ -219,7 +219,7 @@ class GuiElement(ICanvas):
             It should use the draw method."""
         pass
 
-    def interact(self, value: int) -> None:
+    def interact(self, value: int = 0) -> None:
         pass
 
 
@@ -262,22 +262,25 @@ class ElementTreeManager(object):
                  The newly activated element (the one contained in the first leaf).
         """
 
-        self.tree.current.payload.is_active = False
+        self.get_current().is_active = False
         self.tree.reset_current()
 
-        first_node = self.tree.set_next()
-        counter = 0
-        while not first_node.payload.is_visible and counter <= len(self.tree.leaves):
-            first_node = self.tree.set_next()
-            counter += 1
+        if self.get_current().is_visible:
+            self.get_current().is_active = True
+            return self.get_current()
 
-        if counter != len(self.tree.leaves):
-            first_node.payload.is_active = True
-            return self.tree.current.payload
+        for n in range(len(self.tree.leaves) - 1):
+            self.tree.set_next()
+            if self.get_current().is_visible:
+                break
+
+        if self.get_current().is_visible:
+            self.get_current().is_active = True
+            return self.get_current()
         else:
             return None
 
-    def get_active(self) -> GuiElement:
+    def get_current(self) -> GuiElement:
         return self.tree.current.payload
 
     def activate_next(self) -> Union[None, GuiElement]:
@@ -287,16 +290,20 @@ class ElementTreeManager(object):
              Returns:
                  The newly activated element (the one contained in the leaf).
         """
-        self.tree.current.payload.is_active = False
+        self.get_current().is_active = False
+        self.tree.set_next()
 
-        next_node = self.tree.set_next()
-        counter = 0
-        while not next_node.payload.is_visible and counter <= len(self.tree.leaves):
-            next_node = self.tree.set_next()
-            counter += 1
+        if self.get_current().is_visible:
+            self.get_current().is_active = True
+            return self.get_current()
 
-        if counter != len(self.tree.leaves):
-            next_node.payload.is_active = True
-            return self.tree.current.payload
+        for n in range(len(self.tree.leaves) - 1):
+            self.tree.set_next()
+            if self.get_current().is_visible:
+                break
+
+        if self.get_current().is_visible:
+            self.get_current().is_active = True
+            return self.get_current()
         else:
             return None

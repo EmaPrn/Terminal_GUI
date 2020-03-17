@@ -26,7 +26,7 @@ class _BlessedWindow(IWindow):
 
     def get_input(self) -> int:
         with self.screen.cbreak():
-            return self.screen.inkey(timeout=1./25).code
+            return self.screen.inkey(timeout=1./100)
 
     def draw(self, y_pos: int, x_pos: int, text: str, attr=0) -> None:
         """Draw a string of text at a given (relative) position.
@@ -38,7 +38,6 @@ class _BlessedWindow(IWindow):
             attr: Optional parameters to specify text styles.
         """
 
-        orig_text = text
         max_y, max_x = self.get_max_yx()
         max_len = max_x - x_pos
 
@@ -109,9 +108,6 @@ class _BlessedWindow(IWindow):
     def clear(self) -> None:
         print(self.screen.clear())
 
-    def erase(self) -> None:
-        print(self.screen.clear())
-
 
 class BlessedApp(WindowManager):
     def __init__(self):
@@ -128,6 +124,7 @@ class BlessedApp(WindowManager):
 
     def run(self):
         self.design()
+        self.render()
         self.reset_active()
         with self.window.screen.hidden_cursor():
             with self.window.screen.fullscreen():
