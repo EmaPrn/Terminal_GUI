@@ -38,10 +38,12 @@ class _BlessedWindow(IWindow):
             attr: Optional parameters to specify text styles.
         """
 
+        orig_text = text
         max_y, max_x = self.get_max_yx()
         max_len = max_x - x_pos
 
-        print(self.screen.normal)
+        if len(text) > max_len:
+            text = text[:max_len]
 
         # A bitmask is used to set multiple concurrent text styles:
         if (attr & TextStyles.HIGHLIGHTED) >> int(log2(TextStyles.HIGHLIGHTED)):
@@ -64,10 +66,7 @@ class _BlessedWindow(IWindow):
             text = self.screen.cyan(text)
 
         if max_len > 0 and x_pos < max_x and y_pos < max_y:
-            if len(text) > max_len:
-                text = text[:max_len]
-
-            with self.screen.location(x_pos, y_pos):
+             with self.screen.location(x_pos, y_pos):
                 print(text)
 
     def draw_rectangle(self, uly: int, ulx: int, lry: int, lrx: int) -> None:

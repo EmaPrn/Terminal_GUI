@@ -79,11 +79,16 @@ class Panel(GuiElement):
 
         """
         self.draw_rectangle(-1, -1, self.h - 2, self.w - 2)
+        text = self.title[:self.w - 4]
 
         if self.is_active:
-            self.draw(-1, 0, " " + self.title[:self.w - 4] + " ", TextStyles.BOLD | TextStyles.CYAN)
+            if len(text) > 0:
+                self.draw(-1, 0, " ")
+                self.draw(-1, 1, text, TextStyles.BOLD | TextStyles.CYAN)
+                self.draw(-1, len(text) + 1, " ")
         else:
-            self.draw(-1, 0, " " + self.title[:self.w - 4] + " ")
+            if len(text) > 0:
+                self.draw(-1, 0, " " + text + " ")
 
     def draw_children(self) -> None:
         for elem in self.children:

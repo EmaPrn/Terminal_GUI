@@ -2,23 +2,22 @@ from constraints import position_constraint, size_constraint
 from panels import Panel
 
 from blessed_app import BlessedApp
-from time import sleep
 
 class MyApp(BlessedApp):
     def design(self):
         panel_1 = Panel(position_constraint("relative", .2), position_constraint("centered"),
                         size_constraint("relative", .7), size_constraint("relative", .7), "Panel1",
-                        max_w=25, title="Test")
+                        max_w=50, title="Test")
         self.add_element(panel_1)
 
         panel_2 = Panel(position_constraint("relative", .2), position_constraint("centered"),
                         size_constraint("relative", .25), size_constraint("relative", .7), "Panel2",
-                        max_w=30, title="Test")
+                        max_w=40, title="Test")
         panel_1.add_child(panel_2)
 
         panel_3 = Panel(position_constraint("relative", .6), position_constraint("centered"),
                         size_constraint("relative", .25), size_constraint("relative", .7), "Panel3",
-                        max_w=30, title="Test")
+                        max_w=40, title="Test")
         panel_1.add_child(panel_3)
 
         panel_4 = Panel(position_constraint("absolute", 0), position_constraint("centered"),
