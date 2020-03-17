@@ -14,16 +14,15 @@ from _tree import Node, Tree
 
 class TextStyles(object):
     # Flags for drawing options
-    BLINK = 2
-    HIGHLIGHTED = 4
-    UNDERLINE = 8
-    BOLD = 16
-    RED = 32
-    GREEN = 64
-    YELLOW = 128
-    BLUE = 256
-    MAGENTA = 512
-    CYAN = 1024
+    HIGHLIGHTED = 2
+    UNDERLINE = 4
+    BOLD = 8
+    RED = 16
+    GREEN = 32
+    YELLOW = 64
+    BLUE = 128
+    MAGENTA = 256
+    CYAN = 512
 
 
 class CannotDrawError(Exception):

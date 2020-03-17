@@ -26,7 +26,7 @@ class _BlessedWindow(IWindow):
 
     def get_input(self) -> int:
         with self.screen.cbreak():
-            return self.screen.inkey(timeout=0.01)
+            return self.screen.inkey(timeout=1./25)
 
     def draw(self, y_pos: int, x_pos: int, text: str, attr=0) -> None:
         """Draw a string of text at a given (relative) position.
@@ -44,7 +44,6 @@ class _BlessedWindow(IWindow):
         print(self.screen.normal)
 
         # A bitmask is used to set multiple concurrent text styles:
-
         if (attr & TextStyles.HIGHLIGHTED) >> int(log2(TextStyles.HIGHLIGHTED)):
             text = self.screen.reverse(text)
         if (attr & TextStyles.UNDERLINE) >> int(log2(TextStyles.UNDERLINE)):
@@ -63,7 +62,6 @@ class _BlessedWindow(IWindow):
             text = self.screen.magenta(text)
         if (attr & TextStyles.CYAN) >> int(log2(TextStyles.CYAN)):
             text = self.screen.cyan(text)
-
 
         if max_len > 0 and x_pos < max_x and y_pos < max_y:
             if len(text) > max_len:
@@ -107,8 +105,7 @@ class _BlessedWindow(IWindow):
         return self.screen.height, self.screen.width
 
     def delete(self, y_pos: int, x_pos: int) -> None:
-        #return self.screen.delch(y_pos, x_pos)
-        pass
+        self.draw(y_pos, x_pos, " ")
 
     def clear(self) -> None:
         print(self.screen.clear())
@@ -118,6 +115,9 @@ class _BlessedWindow(IWindow):
 
 
 class BlessedApp(WindowManager):
+    def __init__(self):
+        super().__init__()
+        self.window: _BlessedWindow = _BlessedWindow()
 
     @abstractmethod
     def design(self):
@@ -128,9 +128,9 @@ class BlessedApp(WindowManager):
         pass
 
     def run(self):
-        self.window = _BlessedWindow()
         self.design()
         self.reset_active()
         with self.window.screen.hidden_cursor():
-            self.main()
+            with self.window.screen.fullscreen():
+                self.main()
 

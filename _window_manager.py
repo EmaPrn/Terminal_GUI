@@ -25,10 +25,6 @@ class IWindow(ICanvas):
     def clear(self) -> None:
         pass
 
-    @abstractmethod
-    def erase(self) -> None:
-        pass
-
 
 class WindowManager(object):
     """Manages the low level API for rendering the elements displayed on the window an catch user interaction.
@@ -49,8 +45,8 @@ class WindowManager(object):
 
     @window.setter
     def window(self, window: IWindow):
-        self._window: IWindow = window
-        self._element_tree_manager: ElementTreeManager = ElementTreeManager(window)
+        self._window = window
+        self._element_tree_manager = ElementTreeManager(window)
 
     def get_input(self) -> int:
         return self.window.get_input()
@@ -64,11 +60,12 @@ class WindowManager(object):
     def clear(self) -> None:
         self.window.clear()
 
-    def erase(self) -> None:
-        self.window.erase()
+    def refresh(self) -> None:
+        self.window.clear()
+        self.render()
 
     def render(self) -> None:
-        self.erase()
+        self.clear()
         for child in self._element_tree_manager.get_elements():
             child.render()
         if not self._element_tree_manager.get_active().is_visible:
@@ -78,22 +75,10 @@ class WindowManager(object):
         self._element_tree_manager.add_element(child)
 
     def get_next(self) -> GuiElement:
-        old = self._element_tree_manager.get_active()
-        new = self._element_tree_manager.activate_next()
-        if isinstance(old, GuiElement):
-            old.render()
-        if isinstance(new, GuiElement):
-            new.render()
-        return new
+        return self._element_tree_manager.activate_next()
 
     def get_active(self) -> GuiElement:
         return self._element_tree_manager.get_active()
 
     def reset_active(self) -> GuiElement:
-        old = self._element_tree_manager.get_active()
-        new = self._element_tree_manager.reset_active()
-        if isinstance(old, GuiElement):
-            old.render()
-        if isinstance(old, GuiElement):
-            new.render()
-        return new
+        return self._element_tree_manager.reset_active()

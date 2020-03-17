@@ -55,8 +55,6 @@ class _CursesWindow(IWindow):
 
             # A bitmask is used to set multiple concurrent text styles:
             mask = 0
-            if attr & TextStyles.BLINK:
-                mask = mask | curses.A_BLINK
             if (attr & TextStyles.HIGHLIGHTED) >> int(log2(TextStyles.HIGHLIGHTED)):
                 mask = mask | curses.A_STANDOUT
             if (attr & TextStyles.UNDERLINE) >> int(log2(TextStyles.UNDERLINE)):
