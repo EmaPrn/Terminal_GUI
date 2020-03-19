@@ -124,6 +124,7 @@ class CursesApp(WindowManager):
         def set_screen(screen):
             self.window = _CursesWindow(screen)
             self.design()
+            self.render()
             self.reset_active()
             self.main()
 

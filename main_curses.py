@@ -3,10 +3,10 @@ from panels import Panel
 from radiobutton import RadioButton
 from checkbox import Checkbox
 
-from blessed_app import BlessedApp
+from curses_app import CursesApp
 
 
-class MyApp(BlessedApp):
+class MyApp(CursesApp):
     def design(self):
         panel_1 = Panel(position_constraint("relative", .2), position_constraint("centered"),
                         size_constraint("relative", .7), size_constraint("relative", .7), "Main",
@@ -42,11 +42,11 @@ class MyApp(BlessedApp):
         screen_y = 0
         screen_x = 0
 
-        while k != "q": # ESC_KEY:
+        while k != ord("q"): # ESC_KEY:
 
-            if k == "a":  # KEY_TAB
+            if k == ord("a"):  # KEY_TAB
                 self.get_next()
-            elif k == "e":
+            elif k == ord("e"):
                 self.get_active().interact()
 
             old_screen_y = screen_y
