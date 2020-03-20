@@ -51,9 +51,6 @@ class WindowManager(object):
     def get_input(self) -> int:
         return self.window.get_input()
 
-    def set_max_yx(self) -> None:
-        self.window.set_max_yx()
-
     def get_max_yx(self) -> Tuple[int, int]:
         return self.window.get_max_yx()
 
@@ -70,9 +67,6 @@ class WindowManager(object):
         if isinstance(self._element_tree_manager.get_current(), GuiElement):
             if not self._element_tree_manager.get_current().is_visible:
                 self.get_next()
-
-    def erase(self) -> None:
-        self.window.erase()
 
     def add_element(self, child: GuiElement) -> None:
         self._element_tree_manager.add_element(child)

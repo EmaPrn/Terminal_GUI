@@ -4,9 +4,7 @@ from radiobutton import RadioButton
 from checkbox import Checkbox
 
 from curses_app import CursesApp
-
 import curses
-
 
 class MyApp(CursesApp):
     def design(self):
@@ -41,25 +39,24 @@ class MyApp(CursesApp):
     def main(self):
         k = 0
 
-        self.clear()
+        screen_y = 0
+        screen_x = 0
 
         while k != ord("q"): # ESC_KEY:
-            while True:
-                if k == ord("a"):  # KEY_TAB
-                    self.get_next()
-                elif k == ord("e"):
-                    self.get_active().interact()
 
+            if k== curses.KEY_RESIZE:
                 self.render()
 
-                # Wait for next input
-                k = self.get_input()
+            if k == ord("a"):  # KEY_TAB
+                self.get_next()
+            elif k == ord("e"):
+                self.get_active().interact()
 
-                if k != curses.KEY_RESIZE:
-                    break
+            # Wait for next input
+            k = self.get_input()
 
-                self.erase()
-                self.set_max_yx()
+
+        self.clear()
 
 
 if __name__ == "__main__":
