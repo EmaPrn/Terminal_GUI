@@ -23,9 +23,12 @@ class _CursesWindow(IWindow):
     """
     def __init__(self, screen):
         self.screen = screen
+        self._maxyx = (0, 0)
+        self.set_max_yx()
 
         # Perform initialisation on the curses window
         curses.curs_set(0)
+        #screen.nodelay(1)
         curses.init_pair(1, curses.COLOR_RED, curses.COLOR_BLACK)
         curses.init_pair(2, curses.COLOR_GREEN, curses.COLOR_BLACK)
         curses.init_pair(3, curses.COLOR_YELLOW, curses.COLOR_BLACK)
@@ -96,8 +99,11 @@ class _CursesWindow(IWindow):
             self.screen.addch(lry, lrx, curses.ACS_LRCORNER)
             self.screen.addch(lry, ulx, curses.ACS_LLCORNER)
 
+    def set_max_yx(self) -> Tuple[int, int]:
+        self._maxyx = self.screen.getmaxyx()
+
     def get_max_yx(self) -> Tuple[int, int]:
-        return self.screen.getmaxyx()
+        return self._maxyx
 
     def delete(self, y_pos: int, x_pos: int) -> None:
         return self.screen.delch(y_pos, x_pos)

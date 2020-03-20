@@ -41,20 +41,25 @@ class MyApp(CursesApp):
     def main(self):
         k = 0
 
-        while k != ord("q"): # ESC_KEY:
+        self.clear()
 
-            if k == ord("a"):  # KEY_TAB
-                self.get_next()
-            elif k == ord("e"):
-                self.get_active().interact()
-            elif k == curses.KEY_RESIZE:
+        while k != ord("q"): # ESC_KEY:
+            while True:
+                if k == ord("a"):  # KEY_TAB
+                    self.get_next()
+                elif k == ord("e"):
+                    self.get_active().interact()
+
                 self.render()
 
-            # Wait for next input
-            k = self.get_input()
+                # Wait for next input
+                k = self.get_input()
 
+                if k != curses.KEY_RESIZE:
+                    break
 
-        self.clear()
+                self.erase()
+                self.set_max_yx()
 
 
 if __name__ == "__main__":
