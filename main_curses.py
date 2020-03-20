@@ -5,6 +5,8 @@ from checkbox import Checkbox
 
 from curses_app import CursesApp
 
+import curses
+
 
 class MyApp(CursesApp):
     def design(self):
@@ -39,25 +41,17 @@ class MyApp(CursesApp):
     def main(self):
         k = 0
 
-        screen_y = 0
-        screen_x = 0
-
         while k != ord("q"): # ESC_KEY:
 
             if k == ord("a"):  # KEY_TAB
                 self.get_next()
             elif k == ord("e"):
                 self.get_active().interact()
-
-            old_screen_y = screen_y
-            old_screen_x = screen_x
-            screen_y, screen_x = self.get_max_yx()
+            elif k == curses.KEY_RESIZE:
+                self.render()
 
             # Wait for next input
             k = self.get_input()
-
-            if screen_y != old_screen_y or screen_x != old_screen_x:
-                self.render()
 
 
         self.clear()
